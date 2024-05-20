@@ -1349,7 +1349,12 @@ namespace triton {
 
   /* Synthesizer engine Context ============================================================================= */
 
-  triton::engines::synthesis::SynthesisResult Context::synthesize(const triton::ast::SharedAbstractNode& node, bool constant, bool subexpr, bool opaque) {
+  triton::engines::synthesis::SynthesisResult Context::synthesize(
+    const triton::ast::SharedAbstractNode& node, 
+    bool constant, 
+    bool subexpr, 
+    bool opaque) 
+  {
     this->checkSymbolic();
     triton::engines::synthesis::Synthesizer synth(this->symbolic);
     return synth.synthesize(node, constant, subexpr, opaque);
