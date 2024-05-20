@@ -130,6 +130,9 @@ namespace triton {
         //! Constructor with opcode.
         TRITON_EXPORT Instruction(const void* opcode, triton::uint32 opSize);
 
+        //! Constructor with opcode.
+        TRITON_EXPORT Instruction(const triton::bytes &opcode);
+
         //! Constructor with opcode and address
         TRITON_EXPORT Instruction(triton::uint64 addr, const void* opcode, triton::uint32 opSize);
 
@@ -197,7 +200,7 @@ namespace triton {
         TRITON_EXPORT void setOpcode(const void* opcode, triton::uint32 size);
 
         //! Sets the opcode of the instruction.
-        TRITON_EXPORT void setOpcode(const triton::bytes &opcode, triton::uint32 size);
+        TRITON_EXPORT void setOpcode(const triton::bytes &opcode);
 
         //! Returns the size of the instruction.
         TRITON_EXPORT triton::uint32 getSize(void) const;

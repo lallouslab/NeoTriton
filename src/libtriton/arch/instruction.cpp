@@ -42,6 +42,11 @@ namespace triton {
       this->setOpcode(opcode, opSize);
     }
 
+    Instruction::Instruction(const triton::bytes &opcode)
+      : Instruction::Instruction() {
+      this->setOpcode(opcode);
+    }
+
 
     Instruction::Instruction(triton::uint64 addr, const void* opcode, triton::uint32 opSize)
       : Instruction::Instruction(opcode, opSize) {
@@ -144,9 +149,9 @@ namespace triton {
     }
 
 
-    void Instruction::setOpcode(const triton::bytes& opcode, triton::uint32 size)
+    void Instruction::setOpcode(const triton::bytes& opcode)
     {
-      this->setOpcode((void *)opcode.data(), size);
+      this->setOpcode((void *)opcode.data(), opcode.size());
     }
 
 
