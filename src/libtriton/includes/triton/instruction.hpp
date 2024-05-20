@@ -196,6 +196,9 @@ namespace triton {
         //! Sets the opcode of the instruction.
         TRITON_EXPORT void setOpcode(const void* opcode, triton::uint32 size);
 
+        //! Sets the opcode of the instruction.
+        TRITON_EXPORT void setOpcode(const triton::bytes &opcode, triton::uint32 size);
+
         //! Returns the size of the instruction.
         TRITON_EXPORT triton::uint32 getSize(void) const;
 

@@ -144,6 +144,12 @@ namespace triton {
     }
 
 
+    void Instruction::setOpcode(const triton::bytes& opcode, triton::uint32 size)
+    {
+      this->setOpcode((void *)opcode.data(), size);
+    }
+
+
     triton::uint32 Instruction::getSize(void) const {
       return this->size;
     }
