@@ -4,21 +4,12 @@
 **
 **  This program is under the terms of the Apache License 2.0.
 */
+#pragma once
 
-#ifndef TRITON_ASTENUMS_HPP
-#define TRITON_ASTENUMS_HPP
-
-
-
-//! The Triton namespace
-namespace triton {
-/*!
- *  \addtogroup triton
- *  @{
- */
 
   //! The AST namespace
-  namespace ast {
+  namespace triton::ast 
+  {
   /*!
    *  \ingroup triton
    *  \addtogroup ast
@@ -26,7 +17,8 @@ namespace triton {
    */
 
     /*! Enumerates all types of node. Must be prime numbers. */
-    enum ast_e {
+    enum ast_e 
+    {
       INVALID_NODE = 0,          /*!< Invalid node */
       ANY_NODE = INVALID_NODE,   /*!< Any node */
       ASSERT_NODE,               /*!< (assert x) */
@@ -87,7 +79,8 @@ namespace triton {
     };
 
     //! The Representations namespace
-    namespace representations {
+    namespace representations 
+    {
     /*!
      *  \ingroup ast
      *  \addtogroup representations
@@ -95,7 +88,8 @@ namespace triton {
      */
 
       //! All types of representation mode.
-      enum mode_e {
+      enum mode_e 
+      {
         SMT_REPRESENTATION,     /*!< SMT representation */
         PYTHON_REPRESENTATION,  /*!< Python representation */
         PCODE_REPRESENTATION,   /*!< Pseudo Code representation */
@@ -105,8 +99,4 @@ namespace triton {
     /*! @} End of representations namespace */
     };
   /*! @} End of ast namespace */
-  };
-/*! @} End of triton namespace */
 };
-
-#endif /* TRITON_ASTENUMS_HPP */
