@@ -263,7 +263,7 @@ namespace triton {
 
           /* Update instruction address if undefined */
           if (!inst.getAddress()) {
-            inst.setAddress(static_cast<triton::uint64>(this->getConcreteRegisterValue(this->getProgramCounter())));
+            inst.setAddress(this->getConcreteRegisterValue<triton::uint64>(this->getProgramCounter()));
           }
 
           /* Let's disass and build our operands */

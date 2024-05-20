@@ -346,6 +346,12 @@ namespace triton {
           TRITON_EXPORT triton::uint32 numberOfRegisters(void) const;
           TRITON_EXPORT triton::uint512 getConcreteMemoryValue(const triton::arch::MemoryAccess& mem, bool execCallbacks=true) const;
           TRITON_EXPORT triton::uint512 getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks=true) const;
+          template <typename T> T getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks = true) const {
+            static_assert(std::is_integral<T>::value, "Template type T must be an integral type");
+            triton::uint512 value = getConcreteRegisterValue(reg, execCallbacks);
+            return static_cast<T>(value);
+          }
+
           TRITON_EXPORT triton::uint8 getConcreteMemoryValue(triton::uint64 addr, bool execCallbacks=true) const;
           TRITON_EXPORT void clear(void);
           TRITON_EXPORT void disassembly(triton::arch::Instruction& inst);
