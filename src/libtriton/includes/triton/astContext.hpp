@@ -55,7 +55,7 @@ namespace triton {
         //! Modes API
         triton::modes::SharedModes modes;
 
-        //! String formater for ast
+        //! String formatter for ast
         triton::ast::representations::AstRepresentation astRepresentation;
 
         //! Maps a concrete value and ast node for a variable name.
