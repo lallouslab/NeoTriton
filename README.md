@@ -151,6 +151,22 @@ print(info)
 
 ### Windows
 
+#### Using the `tritonenv.bat` script
+
+The `tritonenv.bat` script is a helper script that sets up the environment for building Triton on Windows.
+
+1. Make sure all the dependencies are set up and compiled
+2. Make a copy of `triton.template.env` as `triton.env` and modify the paths to match your system
+3. To build Triton, run `tritonenv.bat init-triton` from the command prompt, then go to `build64` and run `cmake --build . --config RelWithDebInfo`
+
+Notes:
+
+- The `.env` file contains paths to a specific build configuration (`RelWithDebInfo` for example).
+- However the build configuration the dependencies are built, so must the Triton library be built with the same configuration.
+- You make run the `tritonenv.bat` script without any arguments to set up the environment for building the dependencies.
+
+#### Manual instructions
+
 You can use cmake to generate the .sln file of libTriton.
 
 ```console

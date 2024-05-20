@@ -23,3 +23,4 @@ dist/
 *.egg-info/
 wheelhouse/
 .z3-trace
+triton.env
