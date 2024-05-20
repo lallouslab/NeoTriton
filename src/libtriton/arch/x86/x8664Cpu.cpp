@@ -648,8 +648,8 @@ namespace triton {
       }
 
 
-      std::vector<triton::uint8> x8664Cpu::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
-        std::vector<triton::uint8> area;
+      triton::bytes x8664Cpu::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
+        triton::bytes area;
 
         for (triton::usize index = 0; index < size; index++)
           area.push_back(this->getConcreteMemoryValue(baseAddr+index, execCallbacks));
@@ -978,7 +978,7 @@ namespace triton {
       }
 
 
-      void x8664Cpu::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const std::vector<triton::uint8>& values, bool execCallbacks) {
+      void x8664Cpu::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks) {
         // Pre-reserving the memory. We modified the original robin_map to not force rehash on reserve.
         this->memory.reserve(values.size() + this->memory.size());
         for (triton::usize index = 0; index < values.size(); index++) {

@@ -1243,7 +1243,7 @@ namespace triton {
         }
 
         try {
-          std::vector<triton::uint8> vv = PyTritonContext_AsTritonContext(self)->getConcreteMemoryAreaValue(PyLong_AsUint64(addr), PyLong_AsUsize(size), PyLong_AsBool(execCallbacks));
+          triton::bytes vv = PyTritonContext_AsTritonContext(self)->getConcreteMemoryAreaValue(PyLong_AsUint64(addr), PyLong_AsUsize(size), PyLong_AsBool(execCallbacks));
           area = new triton::uint8[vv.size()];
 
           for (triton::usize index = 0; index < vv.size(); index++)
@@ -2680,7 +2680,7 @@ namespace triton {
 
 
       static PyObject* TritonContext_setConcreteMemoryAreaValue(PyObject* self, PyObject* args, PyObject* kwargs) {
-        std::vector<triton::uint8> vv;
+        triton::bytes vv;
         PyObject* baseAddr      = nullptr;
         PyObject* values        = nullptr;
         PyObject* execCallbacks = nullptr;

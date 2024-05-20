@@ -197,7 +197,7 @@ namespace triton {
           TRITON_EXPORT triton::uint512 getSymbolicMemoryValue(const triton::arch::MemoryAccess& mem);
 
           //! Returns the symbolic values of a memory area.
-          TRITON_EXPORT std::vector<triton::uint8> getSymbolicMemoryAreaValue(triton::uint64 baseAddr, triton::usize size);
+          TRITON_EXPORT triton::bytes getSymbolicMemoryAreaValue(triton::uint64 baseAddr, triton::usize size);
 
           //! Returns the symbolic register value.
           TRITON_EXPORT triton::uint512 getSymbolicRegisterValue(const triton::arch::Register& reg);

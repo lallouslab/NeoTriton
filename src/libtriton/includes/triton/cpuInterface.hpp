@@ -117,7 +117,7 @@ namespace triton {
         TRITON_EXPORT virtual triton::uint512 getConcreteMemoryValue(const triton::arch::MemoryAccess& mem, bool execCallbacks=true) const = 0;
 
         //! Returns the concrete value of a memory area.
-        TRITON_EXPORT virtual std::vector<triton::uint8> getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks=true) const = 0;
+        TRITON_EXPORT virtual triton::bytes getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks=true) const = 0;
 
         //! Returns the concrete value of a register.
         TRITON_EXPORT virtual triton::uint512 getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks=true) const = 0;
@@ -144,7 +144,7 @@ namespace triton {
          * \details Note that by setting a concrete value will probably imply a desynchronization
          * with the symbolic state (if it exists). You should probably use the concretize functions after this.
          */
-        TRITON_EXPORT virtual void setConcreteMemoryAreaValue(triton::uint64 baseAddr, const std::vector<triton::uint8>& values, bool execCallbacks=true) = 0;
+        TRITON_EXPORT virtual void setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks=true) = 0;
 
         /*!
          * \brief [**architecture api**] - Sets the concrete value of a memory area.

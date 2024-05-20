@@ -182,7 +182,7 @@ namespace triton {
             TRITON_EXPORT const triton::arch::Register& getRegister(const std::string& name) const;
             TRITON_EXPORT const triton::arch::Register& getStackPointer(void) const;
             TRITON_EXPORT std::set<const triton::arch::Register*> getParentRegisters(void) const;
-            TRITON_EXPORT std::vector<triton::uint8> getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks=true) const;
+            TRITON_EXPORT triton::bytes getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks=true) const;
             TRITON_EXPORT triton::arch::endianness_e getEndianness(void) const;
             TRITON_EXPORT triton::uint32 gprBitSize(void) const;
             TRITON_EXPORT triton::uint32 gprSize(void) const;
@@ -192,7 +192,7 @@ namespace triton {
             TRITON_EXPORT triton::uint8 getConcreteMemoryValue(triton::uint64 addr, bool execCallbacks=true) const;
             TRITON_EXPORT void clear(void);
             TRITON_EXPORT void disassembly(triton::arch::Instruction& inst);
-            TRITON_EXPORT void setConcreteMemoryAreaValue(triton::uint64 baseAddr, const std::vector<triton::uint8>& values, bool execCallbacks=true);
+            TRITON_EXPORT void setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks=true);
             TRITON_EXPORT void setConcreteMemoryAreaValue(triton::uint64 baseAddr, const void* area, triton::usize size, bool execCallbacks=true);
             TRITON_EXPORT void setConcreteMemoryValue(const triton::arch::MemoryAccess& mem, const triton::uint512& value, bool execCallbacks=true);
             TRITON_EXPORT void setConcreteMemoryValue(triton::uint64 addr, triton::uint8 value, bool execCallbacks=true);

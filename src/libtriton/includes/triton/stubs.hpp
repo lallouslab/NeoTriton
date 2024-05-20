@@ -23,7 +23,7 @@ namespace triton {
           /*! Symbols mapping. Each entry points on its position in `systemv::libc::code`. */
           extern std::map<std::string, triton::uint64> symbols;
           /*! Position independent code of some libc functions */
-          extern std::vector<triton::uint8> code;
+          extern triton::bytes code;
         };
       };
       namespace ms {
@@ -31,7 +31,7 @@ namespace triton {
           /*! Symbols mapping. Each entry points on its position in `ms::libc::code`. */
           extern std::map<std::string, triton::uint64> symbols;
           /*! Position independent code of some libc functions */
-          extern std::vector<triton::uint8> code;
+          extern triton::bytes code;
         };
       };
     };
@@ -41,7 +41,7 @@ namespace triton {
           /*! Symbols mapping. Each entry points on its position in `systemv::libc::code`. */
           extern std::map<std::string, triton::uint64> symbols;
           /*! Position independent code of some libc functions */
-          extern std::vector<triton::uint8> code;
+          extern triton::bytes code;
         };
       };
     };
@@ -50,7 +50,7 @@ namespace triton {
         /*! Symbols mapping. Each entry points on its position in `systemv::libc::code`. */
         extern std::map<std::string, triton::uint64> symbols;
         /*! Position independent code of some libc functions */
-        extern std::vector<triton::uint8> code;
+        extern triton::bytes code;
       };
     };
   };

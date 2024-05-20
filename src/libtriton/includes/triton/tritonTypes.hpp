@@ -12,6 +12,7 @@
 #include <cstdint>
 
 #include <triton/config.hpp>
+#include <vector>
 
 #ifdef TRITON_BOOST_INTERFACE
   #include <boost/multiprecision/cpp_int.hpp>
@@ -120,6 +121,9 @@ namespace triton {
     //! signed int if the arch is 32-bits.
     typedef signed int __sint;
     #endif
+
+    //! vector of bytes
+    using bytes = std::vector<triton::uint8>;
 
     /*! \class IdentityHash
     *   \brief Used as a hash function in hash tables containers (std::unordered_map, robin_map).

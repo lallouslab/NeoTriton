@@ -373,7 +373,7 @@ namespace triton {
   }
 
 
-  std::vector<triton::uint8> Context::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
+  triton::bytes Context::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
     this->checkArchitecture();
     return this->arch.getConcreteMemoryAreaValue(baseAddr, size, execCallbacks);
   }
@@ -407,7 +407,7 @@ namespace triton {
   }
 
 
-  void Context::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const std::vector<triton::uint8>& values, bool execCallbacks) {
+  void Context::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks) {
     this->checkArchitecture();
     this->arch.setConcreteMemoryAreaValue(baseAddr, values, execCallbacks);
     /*
@@ -870,7 +870,7 @@ namespace triton {
   }
 
 
-  std::vector<triton::uint8> Context::getSymbolicMemoryAreaValue(triton::uint64 baseAddr, triton::usize size) {
+  triton::bytes Context::getSymbolicMemoryAreaValue(triton::uint64 baseAddr, triton::usize size) {
     this->checkSymbolic();
     return this->symbolic->getSymbolicMemoryAreaValue(baseAddr, size);
   }

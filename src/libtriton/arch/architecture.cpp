@@ -304,7 +304,7 @@ namespace triton {
     }
 
 
-    std::vector<triton::uint8> Architecture::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
+    triton::bytes Architecture::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
       if (!this->cpu)
         throw triton::exceptions::Architecture("Architecture::getConcreteMemoryAreaValue(): You must define an architecture.");
       return this->cpu->getConcreteMemoryAreaValue(baseAddr, size, execCallbacks);
@@ -332,7 +332,7 @@ namespace triton {
     }
 
 
-    void Architecture::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const std::vector<triton::uint8>& values, bool execCallbacks) {
+    void Architecture::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks) {
       if (!this->cpu)
         throw triton::exceptions::Architecture("Architecture::setConcreteMemoryAreaValue(): You must define an architecture.");
       this->cpu->setConcreteMemoryAreaValue(baseAddr, values, execCallbacks);
