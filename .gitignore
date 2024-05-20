@@ -22,3 +22,4 @@ private/*
 dist/
 *.egg-info/
 wheelhouse/
+.z3-trace
