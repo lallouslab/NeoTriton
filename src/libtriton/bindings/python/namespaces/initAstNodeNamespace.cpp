@@ -10,8 +10,6 @@
 #include <triton/pythonXFunctions.hpp>
 #include <triton/ast.hpp>
 
-
-
 /*! \page py_AST_NODE_page AST_NODE
     \brief [**python api**] All information about the AST_NODE Python namespace.
 
@@ -83,8 +81,6 @@ The AST_NODE namespace contains all kinds of nodes.
 - **AST_NODE.ZX**
 
 */
-
-
 
 namespace triton {
   namespace bindings {
