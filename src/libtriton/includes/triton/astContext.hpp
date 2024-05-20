@@ -55,10 +55,10 @@ namespace triton {
         //! Modes API
         triton::modes::SharedModes modes;
 
-        //! String formatter for ast
+        //! String formatter for AST
         triton::ast::representations::AstRepresentation astRepresentation;
 
-        //! Maps a concrete value and ast node for a variable name.
+        //! Maps a concrete value and AST node for a variable name.
         std::unordered_map<std::string, std::pair<triton::ast::WeakAbstractNode, triton::uint512>> valueMapping;
 
         //! The list of nodes
