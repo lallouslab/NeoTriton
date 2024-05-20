@@ -385,6 +385,7 @@ namespace triton {
   }
 
 
+
   void Context::setConcreteMemoryValue(triton::uint64 addr, triton::uint8 value, bool execCallbacks) {
     this->checkArchitecture();
     this->arch.setConcreteMemoryValue(addr, value, execCallbacks);

@@ -196,6 +196,14 @@ namespace triton {
         //! [**architecture api**] - Returns the concrete value of a register.
         TRITON_EXPORT triton::uint512 getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks=true) const;
 
+        //! [**architecture api**] - Returns the concrete value of a register.
+        template<typename T>
+        T getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks=true) const {
+          static_assert(std::is_integral<T>::value, "Template type T must be an integral type");
+          triton::uint512 value = getConcreteRegisterValue(reg, execCallbacks);
+          return static_cast<T>(value);
+        }
+
         /*!
          * \brief [**architecture api**] - Sets the concrete value of a memory cell.
          *
