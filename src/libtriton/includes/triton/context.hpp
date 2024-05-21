@@ -5,8 +5,7 @@
 **  This program is under the terms of the Apache License 2.0.
 */
 
-#ifndef TRITON_CONTEXT_H
-#define TRITON_CONTEXT_H
+#pragma once
 
 #include <triton/architecture.hpp>
 #include <triton/ast.hpp>
@@ -31,18 +30,11 @@
 #include <triton/taintEngine.hpp>
 #include <triton/tritonTypes.hpp>
 
-
-
-//! The Triton namespace
-namespace triton {
-/*!
- *  \addtogroup triton
- *  @{
- */
-
-    /*! \class Context
-     *  \brief This is the main Triton Context class. */
-    class Context {
+namespace triton 
+{
+    // This is the main Triton Context class.
+    class Context 
+    {
       private:
         //! Raises an exception if the architecture is not initialized.
         inline void checkArchitecture(void) const;
@@ -105,98 +97,96 @@ namespace triton {
         //! Destructor of the Context.
         TRITON_EXPORT ~Context();
 
+        // Architecture API ==============================================================================
 
-
-        /* Architecture API ============================================================================== */
-
-        //! [**Architecture api**] - Returns true if the architecture is valid.
+        // Returns true if the architecture is valid.
         TRITON_EXPORT bool isArchitectureValid(void) const;
 
-        //! [**architecture api**] - Returns the architecture as triton::arch::architecture_e.
+        // Returns the architecture as triton::arch::architecture_e.
         TRITON_EXPORT triton::arch::architecture_e getArchitecture(void) const;
 
-        //! [**architecture api**] - Returns the endianness as triton::arch::endianness_e.
+        // Returns the endianness as triton::arch::endianness_e.
         TRITON_EXPORT triton::arch::endianness_e getEndianness(void) const;
 
-        //! [**architecture api**] - Returns the instance of the current CPU used.
+        // Returns the instance of the current CPU used.
         TRITON_EXPORT triton::arch::CpuInterface* getCpuInstance(void);
 
-        //! [**architecture api**] - Initializes an architecture. \sa triton::arch::architecture_e.
+        // Initializes an architecture. \sa triton::arch::architecture_e.
         TRITON_EXPORT void setArchitecture(triton::arch::architecture_e arch);
 
-        //! [**architecture api**] - Clears the architecture states (registers and memory).
+        // Clears the architecture states (registers and memory).
         TRITON_EXPORT void clearArchitecture(void);
 
-        //! [**architecture api**] - Returns true if the register id is a flag. \sa triton::arch::x86::register_e.
+        // Returns true if the register id is a flag. \sa triton::arch::x86::register_e.
         TRITON_EXPORT bool isFlag(triton::arch::register_e regId) const;
 
-        //! [**architecture api**] - Returns true if the register id is a flag.
+        // Returns true if the register id is a flag.
         TRITON_EXPORT bool isFlag(const triton::arch::Register& reg) const;
 
-        //! [**architecture api**] - Returns true if the regId is a register. \sa triton::arch::x86::register_e.
+        // Returns true if the regId is a register. \sa triton::arch::x86::register_e.
         TRITON_EXPORT bool isRegister(triton::arch::register_e regId) const;
 
-        //! [**architecture api**] - Returns true if the regId is a register.
+        // Returns true if the regId is a register.
         TRITON_EXPORT bool isRegister(const triton::arch::Register& reg) const;
 
-        //! [**architecture api**] - Returns Register from regId.
+        // Returns Register from regId.
         TRITON_EXPORT const triton::arch::Register& getRegister(triton::arch::register_e id) const;
 
-        //! [**architecture api**] - Returns Register from its name.
+        // Returns Register from its name.
         TRITON_EXPORT const triton::arch::Register& getRegister(const std::string& name) const;
 
-        //! [**architecture api**] - Returns parent Register from a register.
+        // Returns parent Register from a register.
         TRITON_EXPORT const triton::arch::Register& getParentRegister(const triton::arch::Register& reg) const;
 
-        //! [**architecture api**] - Returns parent Register from regId.
+        // Returns parent Register from regId.
         TRITON_EXPORT const triton::arch::Register& getParentRegister(triton::arch::register_e id) const;
 
-        //! [**architecture api**] - Returns true if the regId is a register or a flag. \sa triton::arch::x86::register_e.
+        // Returns true if the regId is a register or a flag. \sa triton::arch::x86::register_e.
         TRITON_EXPORT bool isRegisterValid(triton::arch::register_e regId) const;
 
-        //! [**architecture api**] - Returns true if the regId is a register or a flag.
+        // Returns true if the regId is a register or a flag.
         TRITON_EXPORT bool isRegisterValid(const triton::arch::Register& reg) const;
 
-        //! [**architecture api**] - Returns true if the execution mode is Thumb. Only useful for Arm32.
+        // Returns true if the execution mode is Thumb. Only useful for Arm32.
         TRITON_EXPORT bool isThumb(void) const;
 
-        //! [**architecture api**] - Sets CPU state to Thumb mode.
+        // Sets CPU state to Thumb mode.
         TRITON_EXPORT void setThumb(bool state);
 
-        //! [**architecture api**] - Returns the bit in byte of the General Purpose Registers.
+        // Returns the bit in byte of the General Purpose Registers.
         TRITON_EXPORT triton::uint32 getGprBitSize(void) const;
 
-        //! [**architecture api**] - Returns the size in byte of the General Purpose Registers.
+        // Returns the size in byte of the General Purpose Registers.
         TRITON_EXPORT triton::uint32 getGprSize(void) const;
 
-        //! [**architecture api**] - Returns the number of registers according to the CPU architecture.
+        // Returns the number of registers according to the CPU architecture.
         TRITON_EXPORT triton::uint32 getNumberOfRegisters(void) const;
 
         //! Returns a NOP instruction according to the architecture.
         TRITON_EXPORT const triton::arch::Instruction getNopInstruction(void) const;
 
-        //! [**architecture api**] - Returns all registers. \sa triton::arch::x86::register_e.
+        // Returns all registers. \sa triton::arch::x86::register_e.
         TRITON_EXPORT const std::unordered_map<triton::arch::register_e, const triton::arch::Register>& getAllRegisters(void) const;
 
-        //! [**architecture api**] - Returns all memory.
+        // Returns all memory.
         TRITON_EXPORT const std::unordered_map<triton::uint64, triton::uint8, IdentityHash<triton::uint64>>& getConcreteMemory(void) const;
 
-        //! [**architecture api**] - Returns all parent registers. \sa triton::arch::x86::register_e.
+        // Returns all parent registers. \sa triton::arch::x86::register_e.
         TRITON_EXPORT std::set<const triton::arch::Register*> getParentRegisters(void) const;
 
-        //! [**architecture api**] - Returns the concrete value of a memory cell.
+        // Returns the concrete value of a memory cell.
         TRITON_EXPORT triton::uint8 getConcreteMemoryValue(triton::uint64 addr, bool execCallbacks=true) const;
 
-        //! [**architecture api**] - Returns the concrete value of memory cells.
+        // Returns the concrete value of memory cells.
         TRITON_EXPORT triton::uint512 getConcreteMemoryValue(const triton::arch::MemoryAccess& mem, bool execCallbacks=true) const;
 
-        //! [**architecture api**] - Returns the concrete value of a memory area.
+        // Returns the concrete value of a memory area.
         TRITON_EXPORT triton::bytes getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks=true) const;
 
-        //! [**architecture api**] - Returns the concrete value of a register.
+        // Returns the concrete value of a register.
         TRITON_EXPORT triton::uint512 getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks=true) const;
 
-        //! [**architecture api**] - Returns the concrete value of a register.
+        // Returns the concrete value of a register.
         template<typename T>
         T getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks=true) const {
           static_assert(std::is_integral<T>::value, "Template type T must be an integral type");
@@ -244,7 +234,7 @@ namespace triton {
          */
         TRITON_EXPORT void setConcreteRegisterValue(const triton::arch::Register& reg, const triton::uint512& value, bool execCallbacks=true);
 
-        //! [**architecture api**] - Defines a concrete state.
+        // Defines a concrete state.
         TRITON_EXPORT void setConcreteState(triton::arch::Architecture& other);
 
         //! Returns true if memory cells have a defined concrete value
@@ -259,38 +249,36 @@ namespace triton {
         //! Clears concrete values assigned to the memory cells
         TRITON_EXPORT void clearConcreteMemoryValue(triton::uint64 baseAddr, triton::usize size=1);
 
-        //! [**architecture api**] - Disassembles the instruction and setup operands.
+        // Disassembles the instruction and setup operands.
         TRITON_EXPORT void disassembly(triton::arch::Instruction& inst) const;
 
-        //! [**architecture api**] - Disassembles a block of instructions. You must define an architecture before.
+        // Disassembles a block of instructions. You must define an architecture before.
         TRITON_EXPORT void disassembly(triton::arch::BasicBlock& block, triton::uint64 addr=0) const;
 
-        //! [**architecture api**] - Disassembles a concrete memory area and returns a list of at most `count` disassembled instructions.
+        // Disassembles a concrete memory area and returns a list of at most `count` disassembled instructions.
         TRITON_EXPORT std::vector<triton::arch::Instruction> disassembly(triton::uint64 addr, triton::usize count) const;
 
-        //! [**architecture api**] - Disassembles a concrete memory area from `addr` until 'filterCallback' returns false. The function returns a 'BasicBlock'
+        // Disassembles a concrete memory area from `addr` until 'filterCallback' returns false. The function returns a 'BasicBlock'
         TRITON_EXPORT triton::arch::BasicBlock disassembly(triton::uint64 addr, bool(*filterCallback)(std::vector<triton::arch::Instruction>&)) const;
 
-        //! [**architecture api**] - Disassembles a concrete memory area from `addr` to control flow instruction and returns a `BasicBlock`.
+        // Disassembles a concrete memory area from `addr` to control flow instruction and returns a `BasicBlock`.
         TRITON_EXPORT triton::arch::BasicBlock disassembly(triton::uint64 addr) const;
 
+        // Processing API ================================================================================
 
-
-        /* Processing API ================================================================================ */
-
-        //! [**proccesing api**] - Processes an instruction and updates engines according to the instruction semantics. Returns `triton::arch::NO_FAULT` if succeed.
+        // Processes an instruction and updates engines according to the instruction semantics. Returns `triton::arch::NO_FAULT` if succeed.
         TRITON_EXPORT triton::arch::exception_e processing(triton::arch::Instruction& inst);
 
-        //! [**proccesing api**] - Processes a block of instructions and updates engines according to instructions semantics. Returns `triton::arch::NO_FAULT` if succeed.
+        // Processes a block of instructions and updates engines according to instructions semantics. Returns `triton::arch::NO_FAULT` if succeed.
         TRITON_EXPORT triton::arch::exception_e processing(triton::arch::BasicBlock& block, triton::uint64 addr=0);
 
-        //! [**proccesing api**] - Initializes everything.
+        // Initializes everything.
         TRITON_EXPORT void initEngines(void);
 
-        //! [**proccesing api**] - Removes everything.
+        // Removes everything.
         TRITON_EXPORT void removeEngines(void);
 
-        //! [**proccesing api**] - Resets everything.
+        // Resets everything.
         TRITON_EXPORT void reset(void);
 
 
@@ -720,5 +708,3 @@ namespace triton {
 
 /*! @} End of triton namespace */
 };
-
-#endif /* TRITON_CONTEXT_H */
