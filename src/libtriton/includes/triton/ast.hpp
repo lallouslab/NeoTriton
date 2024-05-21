@@ -23,7 +23,7 @@
 #include <triton/exceptions.hpp>
 #include <triton/tritonTypes.hpp>
 
-/* Forward declarations */
+// Forward declarations
 namespace triton::engines 
 {
   namespace symbolic 
@@ -39,12 +39,6 @@ namespace triton::engines
 //! The AST namespace
 namespace triton::ast 
 {
-  /*!
-    *  \ingroup triton
-    *  \addtogroup ast
-    *  @{
-    */
-
   class AstContext;
   class AbstractNode;
 
@@ -565,7 +559,8 @@ namespace triton::ast
 
 
   //! `(_ bv<value> <size>)` node
-  class BvNode : public AbstractNode {
+  class BvNode : public AbstractNode 
+  {
   private:
     TRITON_EXPORT void initHash(void);
 
@@ -576,13 +571,15 @@ namespace triton::ast
 
 
   //! `[<expr1> <expr2> <expr3> ...]` node
-  class CompoundNode : public AbstractNode {
+  class CompoundNode : public AbstractNode 
+  {
   private:
     TRITON_EXPORT void initHash(void);
 
   public:
     template <typename T> CompoundNode(const T& exprs, const SharedAstContext& ctxt)
-      : AbstractNode(COMPOUND_NODE, ctxt) {
+      : AbstractNode(COMPOUND_NODE, ctxt) 
+    {
       for (auto expr : exprs)
         this->addChild(expr);
     }
@@ -592,7 +589,8 @@ namespace triton::ast
 
 
   //! `(concat <expr1> <expr2> ...)` node
-  class ConcatNode : public AbstractNode {
+  class ConcatNode : public AbstractNode 
+  {
   private:
     TRITON_EXPORT void initHash(void);
 
