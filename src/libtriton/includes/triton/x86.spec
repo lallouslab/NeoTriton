@@ -1,7 +1,7 @@
 #pragma warning(disable:4067)
 
 #if not (defined REG_SPEC || defined REG_SPEC_NO_CAPSTONE)
-#error REG_SPEC have to be specified before including specs
+    #error REG_SPEC have to be specified before including specs
 #endif
 
 // REG_SPEC(UPPER_NAME, LOWER_NAME, X86_64_UPPER, X84_84_LOWER, x86_64_PARENT, X86_UPPER, X86_LOWER, X86_PARENT, X86_AVAIL)

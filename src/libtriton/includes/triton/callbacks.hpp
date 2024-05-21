@@ -5,8 +5,7 @@
 **  This program is under the terms of the Apache License 2.0.
 */
 
-#ifndef TRITON_CALLBACKS_H
-#define TRITON_CALLBACKS_H
+#pragma once
 
 #include <atomic>
 #include <list>
@@ -19,25 +18,14 @@
 #include <triton/register.hpp>
 #include <triton/tritonTypes.hpp>
 
-
-
 //! The Triton namespace
-namespace triton {
-/*!
- *  \addtogroup triton
- *  @{
- */
-
+namespace triton 
+{
   class Context;
 
   //! The Callbacks namespace
-  namespace callbacks {
-  /*!
-   *  \ingroup triton
-   *  \addtogroup callbacks
-   *  @{
-   */
-
+  namespace callbacks 
+  {
     /*! \brief The prototype of a GET_CONCRETE_MEMORY_VALUE callback.
      *
      * \details The callback takes an Context context as first argument and a memory access as second argument.
@@ -76,7 +64,8 @@ namespace triton {
 
     //! \class Callbacks
     /*! \brief The callbacks class */
-    class Callbacks {
+    class Callbacks 
+    {
       private:
         //! Reference to the Context handling these callbacks
         triton::Context& ctx;
@@ -115,7 +104,7 @@ namespace triton {
         //! Returns the number of callbacks recorded.
         triton::usize countCallbacks(void) const;
 
-        //! Trys to find and remove the callback, raises an exception if not able
+        //! Tries to find and remove the callback, raises an exception if not able
         template <typename T> void removeSingleCallback(std::list<T>& container, T cb);
 
       public:
@@ -176,10 +165,5 @@ namespace triton {
         //! Returns true if at least one callback is defined.
         TRITON_EXPORT bool isDefined(void) const;
     };
-
-  /*! @} End of callbacks namespace */
   };
-/*! @} End of triton namespace */
 };
-
-#endif /* TRITON_CALLBACKS_H */

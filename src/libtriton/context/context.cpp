@@ -35,45 +35,37 @@ Context::~Context() {
   this->removeEngines();
 }
 
-
 inline void Context::checkArchitecture(void) const {
   if (!this->isArchitectureValid())
     throw exceptions::Context("Context::checkArchitecture(): You must define an architecture.");
 }
-
 
 inline void Context::checkIrBuilder(void) const {
   if (!this->irBuilder)
     throw exceptions::Context("Context::checkIrBuilder(): IR builder is undefined, you should define an architecture first.");
 }
 
-
 inline void Context::checkSymbolic(void) const {
   if (!this->symbolic)
     throw exceptions::Context("Context::checkSymbolic(): Symbolic engine is undefined, you should define an architecture first.");
 }
-
 
 inline void Context::checkSolver(void) const {
   if (!this->solver)
     throw exceptions::Context("Context::checkSolver(): Solver engine is undefined, you should define an architecture first.");
 }
 
-
 inline void Context::checkTaint(void) const {
   if (!this->taint)
     throw exceptions::Context("Context::checkTaint(): Taint engine is undefined, you should define an architecture first.");
 }
-
 
 inline void Context::checkLifting(void) const {
   if (!this->lifting)
     throw exceptions::Context("Context::checkLifting(): Lifting engine is undefined, you should define an architecture first.");
 }
 
-
-
-/* Architecture Context ============================================================================== */
+// Architecture Context ==============================================================================
 
 bool Context::isArchitectureValid(void) const {
   return this->arch.isValid();
@@ -89,13 +81,11 @@ arch::endianness_e Context::getEndianness(void) const {
   return this->arch.getEndianness();
 }
 
-
 arch::CpuInterface* Context::getCpuInstance(void) {
   if (!this->isArchitectureValid())
     throw exceptions::Context("Context::checkArchitecture(): You must define an architecture.");
   return this->arch.getCpuInstance();
 }
-
 
 void Context::setArchitecture(arch::architecture_e arch) {
   /* Setup and init the targeted architecture */
@@ -105,7 +95,6 @@ void Context::setArchitecture(arch::architecture_e arch) {
   this->removeEngines();
   this->initEngines();
 }
-
 
 void Context::clearArchitecture(void) {
   this->checkArchitecture();
@@ -1239,18 +1228,15 @@ std::ostream& Context::liftToSMT(std::ostream& stream, const engines::symbolic::
   return this->lifting->liftToSMT(stream, expr, assert_, icomment);
 }
 
-
 std::ostream& Context::liftToDot(std::ostream& stream, const ast::SharedAbstractNode& node) {
   this->checkLifting();
   return this->lifting->liftToDot(stream, node);
 }
 
-
 std::ostream& Context::liftToDot(std::ostream& stream, const engines::symbolic::SharedSymbolicExpression& expr) {
   this->checkLifting();
   return this->lifting->liftToDot(stream, expr);
 }
-
 
 ast::SharedAbstractNode Context::simplifyAstViaLLVM(const ast::SharedAbstractNode& node) const {
   this->checkLifting();

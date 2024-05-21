@@ -54,7 +54,6 @@ namespace triton
         //! Raises an exception if the lifting engine is not initialized.
         inline void checkLifting(void) const;
 
-
       protected:
         //! The Callbacks interface.
         triton::callbacks::Callbacks callbacks;
@@ -82,7 +81,6 @@ namespace triton
 
         //! The IR builder.
         triton::arch::IrBuilder* irBuilder = nullptr;
-
 
       public:
         //! A shortcut to access to a Register class from a register name.
@@ -705,6 +703,4 @@ namespace triton
         //! [**lifting api**] - Lifts and simplify an AST using LLVM
         TRITON_EXPORT triton::ast::SharedAbstractNode simplifyAstViaLLVM(const triton::ast::SharedAbstractNode& node) const;
     };
-
-/*! @} End of triton namespace */
 };
