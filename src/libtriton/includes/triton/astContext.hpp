@@ -20,27 +20,18 @@
 #include <triton/modes.hpp>
 
 // Forward declarations
-namespace triton::engines 
+namespace triton::engines::symbolic
 {
-  namespace symbolic 
-  {
-    class SymbolicExpression;
-    using SharedSymbolicExpression = std::shared_ptr<triton::engines::symbolic::SymbolicExpression>;
+  class SymbolicExpression;
+  using SharedSymbolicExpression = std::shared_ptr<triton::engines::symbolic::SymbolicExpression>;
 
-    class SymbolicVariable;
-    using SharedSymbolicVariable = std::shared_ptr<triton::engines::symbolic::SymbolicVariable>;
-  };
+  class SymbolicVariable;
+  using SharedSymbolicVariable = std::shared_ptr<triton::engines::symbolic::SymbolicVariable>;
 };
 
 //! The AST namespace
 namespace triton::ast 
 {
-/*!
-  *  \ingroup triton
-  *  \addtogroup ast
-  *  @{
-  */
-
   //! \class AstContext
   /*! \brief AST Context - Used as AST builder. */
   class AstContext : public std::enable_shared_from_this<AstContext> 

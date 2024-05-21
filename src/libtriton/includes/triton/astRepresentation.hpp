@@ -15,55 +15,29 @@
 #include <triton/astRepresentationInterface.hpp>
 #include <triton/dllexport.hpp>
 
-//! The AST namespace
+// The AST namespace
 namespace triton::ast 
 {
-/*!
-  *  \ingroup triton
-  *  \addtogroup ast
-  *  @{
-  */
-
-  //! The Representations namespace
+  // The Representations namespace
   namespace representations 
   {
-  /*!
-    *  \ingroup ast
-    *  \addtogroup representations
-    *  @{
-    */
-
-    //! Pseudo code of SMT AST.
+    // Pseudo code of SMT AST.
     class AstRepresentation 
     {
       protected:
         //! The representation mode.
         triton::ast::representations::mode_e mode;
 
-        //! AstRepresentation interface.
+        // AstRepresentation interface.
         std::unique_ptr<triton::ast::representations::AstRepresentationInterface> representations[triton::ast::representations::LAST_REPRESENTATION];
 
       public:
-        //! Constructor.
         TRITON_EXPORT AstRepresentation();
-
-        //! Constructor.
         TRITON_EXPORT AstRepresentation(const AstRepresentation& other);
-
-        //! Operator.
         TRITON_EXPORT AstRepresentation& operator=(const AstRepresentation& other);
-
-        //! Returns the representation mode.
         TRITON_EXPORT triton::ast::representations::mode_e getMode(void) const;
-
-        //! Sets the representation mode.
         TRITON_EXPORT void setMode(triton::ast::representations::mode_e mode);
-
-        //! Prints the node according to the current representation mode.
         TRITON_EXPORT std::ostream& print(std::ostream& stream, AbstractNode* node);
     };
-
-  /*! @} End of representations namespace */
   };
-/*! @} End of ast namespace */
 };
