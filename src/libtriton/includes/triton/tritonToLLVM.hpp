@@ -5,8 +5,7 @@
 **  This program is under the terms of the Apache License 2.0.
 */
 
-#ifndef TRITON_TRITONTOLLVM_HPP
-#define TRITON_TRITONTOLLVM_HPP
+#pragma once
 
 #include <map>
 #include <memory>
@@ -23,56 +22,36 @@
 #include <llvm/IR/Module.h>
 #include <llvm/Transforms/IPO/PassManagerBuilder.h>
 
-
-
-//! The Triton namespace
-namespace triton {
-/*!
- *  \addtogroup triton
- *  @{
- */
-
   //! The AST namespace
-  namespace ast {
-  /*!
-   *  \ingroup triton
-   *  \addtogroup ast
-   *  @{
-   */
+namespace triton::ast
+{
+   // Converts a Triton's AST to LVM IR.
+  class TritonToLLVM 
+  {
+  private:
+    //! The LLVM context.
+    llvm::LLVMContext& llvmContext;
 
-    //! \class TritonToLLVM
-    /*! \brief Converts a Triton's AST to LVM IR. */
-    class TritonToLLVM {
-      private:
-        //! The LLVM context.
-        llvm::LLVMContext& llvmContext;
+    //! The LLVM module.
+    std::shared_ptr<llvm::Module> llvmModule;
 
-        //! The LLVM module.
-        std::shared_ptr<llvm::Module> llvmModule;
+    //! The LLVM IR builder.
+    llvm::IRBuilder<> llvmIR;
 
-        //! The LLVM IR builder.
-        llvm::IRBuilder<> llvmIR;
+    //! Map Triton variables to LLVM ones.
+    std::map<triton::ast::SharedAbstractNode, llvm::Value*> llvmVars;
 
-        //! Map Triton variables to LLVM ones.
-        std::map<triton::ast::SharedAbstractNode, llvm::Value*> llvmVars;
+    //! Create a LLVM function. `fname` represents the name of the LLVM function.
+    void createFunction(const triton::ast::SharedAbstractNode& node, const char* fname);
 
-        //! Create a LLVM function. `fname` represents the name of the LLVM function.
-        void createFunction(const triton::ast::SharedAbstractNode& node, const char* fname);
+    //! Converts Triton AST to LLVM IR.
+    llvm::Value* do_convert(const triton::ast::SharedAbstractNode& node, std::unordered_map<triton::ast::SharedAbstractNode, llvm::Value*>* results);
 
-        //! Converts Triton AST to LLVM IR.
-        llvm::Value* do_convert(const triton::ast::SharedAbstractNode& node, std::unordered_map<triton::ast::SharedAbstractNode, llvm::Value*>* results);
+  public:
+    //! Constructor.
+    TRITON_EXPORT TritonToLLVM(llvm::LLVMContext& llvmContext);
 
-      public:
-        //! Constructor.
-        TRITON_EXPORT TritonToLLVM(llvm::LLVMContext& llvmContext);
-
-        //! Lifts a symbolic expression and all its references to LLVM format. `fname` represents the name of the LLVM function.
-        TRITON_EXPORT std::shared_ptr<llvm::Module> convert(const triton::ast::SharedAbstractNode& node, const char* fname="__triton", bool optimize=false);
-    };
-
-  /*! @} End of ast namespace */
+    //! Lifts a symbolic expression and all its references to LLVM format. `fname` represents the name of the LLVM function.
+    TRITON_EXPORT std::shared_ptr<llvm::Module> convert(const triton::ast::SharedAbstractNode& node, const char* fname = "__triton", bool optimize = false);
   };
-/*! @} End of triton namespace */
-};
-
-#endif /* TRITON_TRITONTOLLVM_HPP */
+}

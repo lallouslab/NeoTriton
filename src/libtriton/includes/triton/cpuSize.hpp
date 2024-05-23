@@ -5,27 +5,20 @@
 **  This program is under the terms of the Apache License 2.0.
 */
 
-#ifndef TRITON_CPUSIZE_H
-#define TRITON_CPUSIZE_H
+#pragma once
 
 #include <triton/tritonTypes.hpp>
 
-
-
-//! The Triton namespace
-namespace triton {
+namespace triton 
+{
 /*!
  *  \addtogroup triton
  *  @{
  */
 
   //! The Size namespace
-  namespace size {
-  /*!
-   *  \ingroup triton
-   *  \addtogroup size
-   *  @{
-   */
+  namespace size 
+  {
     //! byte size in byte
     constexpr triton::uint32 byte          = 1;
     //! word size in byte
@@ -48,12 +41,8 @@ namespace triton {
   };
 
   //! The BitSize namespace
-  namespace bitsize {
-  /*!
-   *  \ingroup triton
-   *  \addtogroup bitsize
-   *  @{
-   */
+  namespace bitsize 
+  {
     //! flag size in bit
     constexpr triton::uint32 flag          = 1;
     //! byte size in bit
@@ -76,8 +65,4 @@ namespace triton {
     constexpr triton::uint32 max_supported = dqqword;
   /*! @} End of bitsize namespace */
   };
-
-/*! @} End of triton namespace */
-};
-
-#endif /* TRITON_CPUSIZE_H */
+}

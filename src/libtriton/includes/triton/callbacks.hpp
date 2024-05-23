@@ -31,7 +31,10 @@ namespace triton
      * \details The callback takes a Context as first argument and a memory access as second argument.
      * Callbacks will be called each time that the Triton library will need to LOAD a concrete memory value.
      */
-    using getConcreteMemoryValueCallback = ComparableFunctor<void(triton::Context&, const triton::arch::MemoryAccess&)>;
+    using getConcreteMemoryValueCallback = ComparableFunctor<
+      void(
+        triton::Context&, 
+        const triton::arch::MemoryAccess&)>;
 
     /*! \brief The prototype of a GET_CONCRETE_REGISTER_VALUE callback.
      *
@@ -147,10 +150,10 @@ namespace triton
         TRITON_EXPORT void clearCallbacks(void);
 
         //! Deletes a GET_CONCRETE_MEMORY_VALUE callback.
-        TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, ComparableFunctor<void(triton::Context&, const triton::arch::MemoryAccess&)> cb);
+        TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, getConcreteMemoryValueCallback cb);
 
         //! Deletes a GET_CONCRETE_REGISTER_VALUE callback.
-        TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, ComparableFunctor<void(triton::Context&, const triton::arch::Register&)> cb);
+        TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, getConcreteRegisterValueCallback cb);
 
         //! Deletes a SET_CONCRETE_MEMORY_VALUE callback.
         TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, ComparableFunctor<void(triton::Context&, const triton::arch::MemoryAccess&, const triton::uint512& value)> cb);
@@ -180,7 +183,7 @@ namespace triton
         TRITON_EXPORT bool isDefined(triton::callbacks::callback_e kind) const;
 
         //! Returns true if at least one callback is defined.
-        TRITON_EXPORT bool isDefined(void) const;
+        TRITON_EXPORT bool isDefined(void) const { return this->defined; };
     };
   };
 };

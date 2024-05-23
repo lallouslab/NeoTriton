@@ -24,19 +24,15 @@
 #include <triton/tritonTypes.hpp>
 
 // Forward declarations
-namespace triton::engines 
+namespace triton::engines::symbolic
 {
-  namespace symbolic 
-  {
-    class SymbolicExpression;
-    using SharedSymbolicExpression = std::shared_ptr<triton::engines::symbolic::SymbolicExpression>;
+  class SymbolicExpression;
+  using SharedSymbolicExpression = std::shared_ptr<triton::engines::symbolic::SymbolicExpression>;
 
-    class SymbolicVariable;
-    using SharedSymbolicVariable = std::shared_ptr<triton::engines::symbolic::SymbolicVariable>;
-  };
-};
+  class SymbolicVariable;
+  using SharedSymbolicVariable = std::shared_ptr<triton::engines::symbolic::SymbolicVariable>;
+}
 
-//! The AST namespace
 namespace triton::ast 
 {
   class AstContext;
@@ -178,7 +174,8 @@ namespace triton::ast
 
 
   //! `(Array (_ BitVec indexSize) (_ BitVec 8))` node
-  class ArrayNode : public AbstractNode {
+  class ArrayNode : public AbstractNode 
+  {
   private:
     //! \brief Mapping of concrete values. It allows us to:
     //
@@ -198,13 +195,9 @@ namespace triton::ast
     //! Stores a concrete value into the memory array
     TRITON_EXPORT void store(triton::uint64 addr, triton::uint8 value);
 
-    //! Select a concrete value into the memory array
+    // Select a concrete value into the memory array
     TRITON_EXPORT triton::uint8 select(triton::uint64 addr) const;
-
-    //! Select a concrete value into the memory array
     TRITON_EXPORT triton::uint8 select(const triton::uint512& addr) const;
-
-    //! Select a concrete value into the memory array
     TRITON_EXPORT triton::uint8 select(const SharedAbstractNode& node) const;
 
     //! Gets the concrete memory array
@@ -216,7 +209,8 @@ namespace triton::ast
 
 
   //! `(assert <expr>)` node
-  class AssertNode : public AbstractNode {
+  class AssertNode : public AbstractNode 
+  {
   private:
     TRITON_EXPORT void initHash(void);
 
@@ -556,7 +550,6 @@ namespace triton::ast
     TRITON_EXPORT BvxorNode(const SharedAbstractNode& expr1, const SharedAbstractNode& expr2);
     TRITON_EXPORT void init(bool withParents = false);
   };
-
 
   //! `(_ bv<value> <size>)` node
   class BvNode : public AbstractNode 
@@ -919,7 +912,7 @@ namespace triton::ast
   //! Returns a deque of collected matched nodes via a depth-first pre order traversal.
   TRITON_EXPORT std::deque<SharedAbstractNode> search(const SharedAbstractNode& node, triton::ast::ast_e match = ANY_NODE);
 
-  //! Returns the first non referene node encountered.
+  //! Returns the first non reference node encountered.
   TRITON_EXPORT SharedAbstractNode dereference(const SharedAbstractNode& node);
 
   //! Gets the index size of an array
@@ -934,12 +927,11 @@ namespace triton::ast
   }
 
   //! std::string specialization
-  template <> std::string inline getInteger(const SharedAbstractNode& node) {
-    if (node->getType() == INTEGER_NODE) {
+  template <> std::string inline getInteger(const SharedAbstractNode& node) 
+  {
+    if (node->getType() == INTEGER_NODE)
       return triton::utils::toString(reinterpret_cast<triton::ast::IntegerNode*>(node.get())->getInteger());
-    }
+
     throw triton::exceptions::Ast("triton::ast::getInteger(): You must provide an INTEGER_NODE.");
   }
-
-  /*! @} End of ast namespace */
-};
+}

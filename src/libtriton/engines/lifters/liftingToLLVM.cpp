@@ -17,23 +17,22 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
-
-
 namespace triton {
   namespace engines {
     namespace lifters {
 
-      LiftingToLLVM::LiftingToLLVM() {
+      LiftingToLLVM::LiftingToLLVM() 
+      {
       }
 
-
-      std::ostream& LiftingToLLVM::liftToLLVM(std::ostream& stream, const triton::engines::symbolic::SharedSymbolicExpression& expr, const char* fname, bool optimize) {
+      std::ostream& LiftingToLLVM::liftToLLVM(std::ostream& stream, const triton::engines::symbolic::SharedSymbolicExpression& expr, const char* fname, bool optimize) 
+      {
         this->liftToLLVM(stream, expr->getAst(), fname, optimize);
         return stream;
       }
 
-
-      std::ostream& LiftingToLLVM::liftToLLVM(std::ostream& stream, const triton::ast::SharedAbstractNode& node, const char* fname, bool optimize) {
+      std::ostream& LiftingToLLVM::liftToLLVM(std::ostream& stream, const triton::ast::SharedAbstractNode& node, const char* fname, bool optimize) 
+      {
         /* The LLVM context */
         llvm::LLVMContext context;
 
@@ -52,8 +51,8 @@ namespace triton {
         return stream;
       }
 
-
-      triton::ast::SharedAbstractNode LiftingToLLVM::simplifyAstViaLLVM(const triton::ast::SharedAbstractNode& node) const {
+      triton::ast::SharedAbstractNode LiftingToLLVM::simplifyAstViaLLVM(const triton::ast::SharedAbstractNode& node) const 
+      {
         llvm::LLVMContext context;
 
         triton::ast::TritonToLLVM ttllvm(context);
@@ -62,7 +61,6 @@ namespace triton {
         auto llvmModule = ttllvm.convert(node, "__tmp", true);  /* from triton to llvm */
         return llvmtt.convert(llvmModule.get(), "__tmp");       /* from llvm to triton */
       }
-
     }; /* lifters namespace */
   }; /* engines namespace */
 }; /* triton namespace */
