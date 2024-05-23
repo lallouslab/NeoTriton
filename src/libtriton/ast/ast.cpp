@@ -3569,16 +3569,18 @@ namespace triton::ast
     return node->getContext()->collect(newNode);
   }
 
-  SharedAbstractNode newInstance(AbstractNode* node, bool unroll) {
+  SharedAbstractNode newInstance(AbstractNode* node, bool unroll) 
+  {
     std::unordered_map<AbstractNode*, SharedAbstractNode> exprs;
     auto nodes = childrenExtraction(node->shared_from_this(), unroll, true);
 
-    for (auto&& n : nodes) {
+    for (auto&& n : nodes) 
+    {
       /* Do a copy of all children */
       const auto& newNode = shallowCopy(n.get(), unroll);
       exprs[n.get()] = newNode;
 
-      /* For each child, set its parent */
+      // For each child, set its parent
       auto& children = newNode->getChildren();
       for (auto& child : children) {
         child = exprs[child.get()];
@@ -3590,11 +3592,10 @@ namespace triton::ast
     return exprs.at(node);
   }
 
-
-  SharedAbstractNode unroll(const triton::ast::SharedAbstractNode& node) {
+  SharedAbstractNode unroll(const triton::ast::SharedAbstractNode& node) 
+  {
     return triton::ast::newInstance(node.get(), true);
   }
-
 
   /* Returns a vector of unique AST-nodes sorted topologically
     *
@@ -3606,7 +3607,8 @@ namespace triton::ast
     * @revert - reverses the result
     * @descent - if true we traverse through children of nodes, otherwise parents
     */
-  static std::vector<SharedAbstractNode> nodesExtraction(const SharedAbstractNode& node, bool unroll, bool revert, bool descend) {
+  static std::vector<SharedAbstractNode> nodesExtraction(const SharedAbstractNode& node, bool unroll, bool revert, bool descend) 
+  {
     std::vector<SharedAbstractNode> result;
     std::unordered_set<AbstractNode*> visited;
     std::stack<std::pair<SharedAbstractNode, bool>> worklist;
@@ -3617,65 +3619,63 @@ namespace triton::ast
     /*
       *  We use a worklist strategy to avoid recursive calls
       *  and so stack overflow when going through a big AST.
-      */
+    */
     worklist.push({node, false});
 
-    while (!worklist.empty()) {
+    while (!worklist.empty()) 
+    {
       SharedAbstractNode ast;
       bool postOrder;
       std::tie(ast, postOrder) = worklist.top();
       worklist.pop();
 
       /* It means that we visited all children of this node and we can put it in the result */
-      if (postOrder) {
+      if (postOrder) 
+      {
         result.push_back(ast);
         continue;
       }
 
-      if (!visited.insert(ast.get()).second) {
+      if (!visited.insert(ast.get()).second)
         continue;
-      }
 
       worklist.push({ast, true});
 
       const auto& relatives = descend ? ast->getChildren() : ast->getParents();
 
       /* Proceed relatives */
-      for (const auto& r : relatives) {
-        if (visited.find(r.get()) == visited.end()) {
+      for (const auto& r : relatives) 
+      {
+        if (visited.find(r.get()) == visited.end())
           worklist.push({r, false});
-        }
       }
 
       /* If unroll is true, we unroll all references */
-      if (unroll && ast->getType() == REFERENCE_NODE) {
+      if (unroll && ast->getType() == REFERENCE_NODE) 
+      {
         const SharedAbstractNode& ref = reinterpret_cast<ReferenceNode*>(ast.get())->getSymbolicExpression()->getAst();
-        if (visited.find(ref.get()) == visited.end()) {
+        if (visited.find(ref.get()) == visited.end())
           worklist.push({ref, false});
-        }
       }
     }
 
     /* The result is in reversed topological sort meaning that children go before parents */
-    if (!revert) {
+    if (!revert)
       std::reverse(result.begin(), result.end());
-    }
 
     return result;
   }
-
 
   std::vector<SharedAbstractNode> childrenExtraction(const SharedAbstractNode& node, bool unroll, bool revert) {
     return nodesExtraction(node, unroll, revert, true);
   }
 
-
   std::vector<SharedAbstractNode> parentsExtraction(const SharedAbstractNode& node, bool revert) {
     return nodesExtraction(node, false, revert, false);
   }
 
-
-  std::deque<SharedAbstractNode> search(const SharedAbstractNode& node, triton::ast::ast_e match) {
+  std::deque<SharedAbstractNode> search(const SharedAbstractNode& node, triton::ast::ast_e match) 
+  {
     std::stack<AbstractNode*>                worklist;
     std::deque<SharedAbstractNode>           result;
     std::unordered_set<const AbstractNode*>  visited;
@@ -3711,7 +3711,8 @@ namespace triton::ast
   {
     AbstractNode* ptr = node.get();
 
-    while (ptr->getType() == REFERENCE_NODE) {
+    while (ptr->getType() == REFERENCE_NODE) 
+    {
       const ReferenceNode* ref = reinterpret_cast<const ReferenceNode*>(ptr);
       ptr = ref->getSymbolicExpression()->getAst().get();
     }
@@ -3719,11 +3720,15 @@ namespace triton::ast
     return ptr->shared_from_this();
   }
 
-  triton::uint32 getIndexSize(const SharedAbstractNode& node) {
+  triton::uint32 getIndexSize(const SharedAbstractNode& node) 
+  {
     auto nref = triton::ast::dereference(node);
-    switch(nref->getType()) {
-      case ARRAY_NODE: return reinterpret_cast<ArrayNode*>(nref.get())->getIndexSize();
-      case STORE_NODE: return reinterpret_cast<StoreNode*>(nref.get())->getIndexSize();
+    switch(nref->getType()) 
+    {
+      case ARRAY_NODE: 
+        return reinterpret_cast<ArrayNode*>(nref.get())->getIndexSize();
+      case STORE_NODE: 
+        return reinterpret_cast<StoreNode*>(nref.get())->getIndexSize();
       default:
         throw triton::exceptions::Ast("triton::ast::getIndexSize(): The given node is not an array.");
     }

@@ -35,7 +35,8 @@ Context::~Context() {
   this->removeEngines();
 }
 
-inline void Context::checkArchitecture(void) const {
+inline void Context::checkArchitecture(void) const 
+{
   if (!this->isArchitectureValid())
     throw exceptions::Context("Context::checkArchitecture(): You must define an architecture.");
 }
@@ -87,7 +88,8 @@ arch::CpuInterface* Context::getCpuInstance(void) {
   return this->arch.getCpuInstance();
 }
 
-void Context::setArchitecture(arch::architecture_e arch) {
+void Context::setArchitecture(arch::architecture_e arch) 
+{
   /* Setup and init the targeted architecture */
   this->arch.setArchitecture(arch);
 
@@ -395,9 +397,10 @@ void Context::initEngines(void) {
   this->registers.init(this->arch.getArchitecture());
 }
 
-
-void Context::removeEngines(void) {
-  if (this->isArchitectureValid()) {
+void Context::removeEngines(void) 
+{
+  if (this->isArchitectureValid()) 
+  {
     delete this->irBuilder;
     delete this->lifting;
     delete this->solver;
@@ -419,9 +422,10 @@ void Context::removeEngines(void) {
   this->registers.clear();
 }
 
-
-void Context::reset(void) {
-  if (this->isArchitectureValid()) {
+void Context::reset(void) 
+{
+  if (this->isArchitectureValid()) 
+  {
     this->removeEngines();
     this->initEngines();
     this->clearArchitecture();
@@ -431,20 +435,20 @@ void Context::reset(void) {
 }
 
 
-arch::exception_e Context::processing(arch::Instruction& inst) {
+arch::exception_e Context::processing(arch::Instruction& inst) 
+{
   this->checkArchitecture();
   this->arch.disassembly(inst);
   return this->irBuilder->buildSemantics(inst);
 }
 
 
-arch::exception_e Context::processing(arch::BasicBlock& block, uint64 addr) {
+arch::exception_e Context::processing(arch::BasicBlock& block, uint64 addr) 
+{
   this->checkArchitecture();
   this->arch.disassembly(block, addr);
   return this->irBuilder->buildSemantics(block);
 }
-
-
 
 /* IR builder Context ================================================================================= */
 

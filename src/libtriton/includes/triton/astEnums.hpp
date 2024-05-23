@@ -84,7 +84,8 @@ namespace triton::ast
     //! All types of representation mode.
     enum mode_e 
     {
-      SMT_REPRESENTATION,     /*!< SMT representation */
+      FIRST_REPRESENTATION = 0, /*!< Must be the first item */
+      SMT_REPRESENTATION = FIRST_REPRESENTATION, /*!< SMT representation */
       PYTHON_REPRESENTATION,  /*!< Python representation */
       PCODE_REPRESENTATION,   /*!< Pseudo Code representation */
       LAST_REPRESENTATION,    /*!< Must be the last item */

@@ -26,8 +26,7 @@ namespace triton::ast::representations
     this->representations[PYTHON_REPRESENTATION] = std::unique_ptr<AstPythonRepresentation>(new(std::nothrow) AstPythonRepresentation());
     this->representations[PCODE_REPRESENTATION]  = std::unique_ptr<AstPcodeRepresentation>(new(std::nothrow) AstPcodeRepresentation());
 
-    std::vector<mode_e> modes = { SMT_REPRESENTATION, PYTHON_REPRESENTATION, PCODE_REPRESENTATION };
-    for (const auto& mode : modes) 
+    for (int mode= FIRST_REPRESENTATION; mode < LAST_REPRESENTATION; ++mode)
     {
       if (this->representations[mode] == nullptr)
         throw triton::exceptions::AstRepresentation("AstRepresentation::AstRepresentation(): Cannot allocate a new representation instance.");
@@ -46,12 +45,10 @@ namespace triton::ast::representations
     return *this;
   }
 
-
   triton::ast::representations::mode_e AstRepresentation::getMode(void) const 
   {
     return this->mode;
   }
-
 
   void AstRepresentation::setMode(triton::ast::representations::mode_e mode) 
   {
@@ -60,7 +57,7 @@ namespace triton::ast::representations
     this->mode = mode;
   }
 
-    std::ostream& AstRepresentation::print(std::ostream& stream, AbstractNode* node) {
+  std::ostream& AstRepresentation::print(std::ostream& stream, AbstractNode* node) {
     return this->representations[this->mode]->print(stream, node);
   }
 };

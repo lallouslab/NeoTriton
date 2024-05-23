@@ -279,8 +279,6 @@ namespace triton
         // Resets everything.
         TRITON_EXPORT void reset(void);
 
-
-
         /* IR API ======================================================================================== */
 
         //! [**IR builder api**] - Builds the instruction semantics. Returns `triton::arch::NO_FAULT` if succeed.
@@ -293,7 +291,6 @@ namespace triton
         TRITON_EXPORT triton::ast::SharedAstContext getAstContext(void);
 
 
-
         /* AST Representation API ======================================================================== */
 
         //! [**AST representation api**] - Returns the AST representation as triton::ast::representation_e.
@@ -302,9 +299,7 @@ namespace triton
         //! [**AST representation api**] - Sets the AST representation.
         TRITON_EXPORT void setAstRepresentationMode(triton::ast::representations::mode_e mode);
 
-
-
-        /* Callbacks API ================================================================================= */
+        // Callbacks API =================================================================================
 
         //! [**callbacks api**] - Adds a callback.
         template <typename T> void addCallback(triton::callbacks::callback_e kind, T cb) {
@@ -703,4 +698,4 @@ namespace triton
         //! [**lifting api**] - Lifts and simplify an AST using LLVM
         TRITON_EXPORT triton::ast::SharedAbstractNode simplifyAstViaLLVM(const triton::ast::SharedAbstractNode& node) const;
     };
-};
+}
