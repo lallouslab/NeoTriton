@@ -551,7 +551,8 @@ namespace triton {
         }
 
 
-        triton::uint8 AArch64Cpu::getConcreteMemoryValue(triton::uint64 addr, bool execCallbacks) const {
+        triton::uint8 AArch64Cpu::getConcreteMemoryValue(triton::uint64 addr, bool execCallbacks) const 
+        {
           if (execCallbacks && this->callbacks)
             this->callbacks->processCallbacks(triton::callbacks::GET_CONCRETE_MEMORY_VALUE, MemoryAccess(addr, triton::size::byte));
 
@@ -563,7 +564,8 @@ namespace triton {
         }
 
 
-        triton::uint512 AArch64Cpu::getConcreteMemoryValue(const triton::arch::MemoryAccess& mem, bool execCallbacks) const {
+        triton::uint512 AArch64Cpu::getConcreteMemoryValue(const triton::arch::MemoryAccess& mem, bool execCallbacks) const 
+        {
           triton::uint512 ret = 0;
           triton::uint64 addr = 0;
           triton::uint32 size = 0;
@@ -584,7 +586,8 @@ namespace triton {
         }
 
 
-        triton::bytes AArch64Cpu::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
+        triton::bytes AArch64Cpu::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const 
+        {
           triton::bytes area;
 
           for (triton::usize index = 0; index < size; index++)
