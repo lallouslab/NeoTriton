@@ -8,135 +8,126 @@
 #include <triton/cpuInterface.hpp>
 #include <triton/register.hpp>
 
+namespace triton::arch 
+{
+  Register::Register()
+    : Register(triton::arch::ID_REG_INVALID, "unknown", triton::arch::ID_REG_INVALID, 0, 0, true) 
+  {
+  }
+
+  Register::Register(triton::arch::register_e regId, std::string name, triton::arch::register_e parent, triton::uint32 high, triton::uint32 low, bool vmutable)
+    : BitsVector(high, low),
+      name(name),
+      id(regId),
+      parent(parent),
+      vmutable(vmutable) 
+  {
+  }
+
+  Register::Register(const triton::arch::CpuInterface& cpu, triton::arch::register_e regId)
+    : Register((regId == triton::arch::ID_REG_INVALID) ? Register() : cpu.getRegister(regId)) 
+  {
+  }
+
+  Register::Register(const Register& other)
+    : BitsVector(other),
+      ArmOperandProperties(other) 
+  {
+    this->copy(other);
+  }
+
+  void Register::copy(const Register& other) 
+  {
+    this->id       = other.id;
+    this->name     = other.name;
+    this->parent   = other.parent;
+    this->vmutable = other.vmutable;
+  }
 
 
-namespace triton {
-  namespace arch {
+  triton::arch::register_e Register::getId(void) const {
+    return this->id;
+  }
 
-    Register::Register()
-      : Register(triton::arch::ID_REG_INVALID, "unknown", triton::arch::ID_REG_INVALID, 0, 0, true) {
+
+  triton::arch::register_e Register::getParent(void) const {
+    return this->parent;
+  }
+
+
+  triton::uint32 Register::getBitSize(void) const {
+    return this->getVectorSize();
+  }
+
+
+  triton::uint32 Register::getSize(void) const {
+    return this->getVectorSize() / triton::bitsize::byte;
+  }
+
+
+  std::string Register::getName(void) const {
+    if (this->getVASType()) {
+      return this->name + "." + this->getVASName();
     }
+    return this->name;
+  }
 
 
-    Register::Register(triton::arch::register_e regId, std::string name, triton::arch::register_e parent, triton::uint32 high, triton::uint32 low, bool vmutable)
-      : BitsVector(high, low),
-        name(name),
-        id(regId),
-        parent(parent),
-        vmutable(vmutable) {
+  triton::arch::operand_e Register::getType(void) const {
+    return triton::arch::OP_REG;
+  }
+
+
+  bool Register::isOverlapWith(const Register& other) const {
+    if (this->parent == other.parent) {
+      if (this->getLow() <= other.getLow() && other.getLow() <= this->getHigh()) return true;
+      if (other.getLow() <= this->getLow() && this->getLow() <= other.getHigh()) return true;
     }
+    return false;
+  }
 
 
-    Register::Register(const triton::arch::CpuInterface& cpu, triton::arch::register_e regId)
-      : Register(
-          (regId == triton::arch::ID_REG_INVALID) ?
-          triton::arch::Register(triton::arch::ID_REG_INVALID, "unknown", triton::arch::ID_REG_INVALID, 0, 0, true) : cpu.getRegister(regId)
-        ) {
-    }
+  bool Register::isMutable(void) const {
+    return this->vmutable;
+  }
 
 
-    Register::Register(const Register& other)
-      : BitsVector(other),
-        ArmOperandProperties(other) {
-      this->copy(other);
-    }
+  bool Register::operator==(const Register& other) const {
+    return getId() == other.getId();
+  }
 
 
-    void Register::copy(const Register& other) {
-      this->id       = other.id;
-      this->name     = other.name;
-      this->parent   = other.parent;
-      this->vmutable = other.vmutable;
-    }
+  bool Register::operator!=(const Register& other) const {
+    return !(*this == other);
+  }
 
 
-    triton::arch::register_e Register::getId(void) const {
-      return this->id;
-    }
+  Register& Register::operator=(const Register& other) {
+    ArmOperandProperties::operator=(other);
+    BitsVector::operator=(other);
+    this->copy(other);
+    return *this;
+  }
 
+  std::ostream& operator<<(std::ostream& stream, const Register& reg) 
+  {
+    stream << reg.getName()
+            << ":"
+            << std::dec << reg.getBitSize()
+            << " bv["
+            << reg.getHigh()
+            << ".."
+            << reg.getLow()
+            << "]";
+    return stream;
+  }
 
-    triton::arch::register_e Register::getParent(void) const {
-      return this->parent;
-    }
+  std::ostream& operator<<(std::ostream& stream, const Register* reg) {
+    stream << *reg;
+    return stream;
+  }
 
-
-    triton::uint32 Register::getBitSize(void) const {
-      return this->getVectorSize();
-    }
-
-
-    triton::uint32 Register::getSize(void) const {
-      return this->getVectorSize() / triton::bitsize::byte;
-    }
-
-
-    std::string Register::getName(void) const {
-      if (this->getVASType()) {
-        return this->name + "." + this->getVASName();
-      }
-      return this->name;
-    }
-
-
-    triton::arch::operand_e Register::getType(void) const {
-      return triton::arch::OP_REG;
-    }
-
-
-    bool Register::isOverlapWith(const Register& other) const {
-      if (this->parent == other.parent) {
-        if (this->getLow() <= other.getLow() && other.getLow() <= this->getHigh()) return true;
-        if (other.getLow() <= this->getLow() && this->getLow() <= other.getHigh()) return true;
-      }
-      return false;
-    }
-
-
-    bool Register::isMutable(void) const {
-      return this->vmutable;
-    }
-
-
-    bool Register::operator==(const Register& other) const {
-      return getId() == other.getId();
-    }
-
-
-    bool Register::operator!=(const Register& other) const {
-      return !(*this == other);
-    }
-
-
-    Register& Register::operator=(const Register& other) {
-      ArmOperandProperties::operator=(other);
-      BitsVector::operator=(other);
-      this->copy(other);
-      return *this;
-    }
-
-
-    std::ostream& operator<<(std::ostream& stream, const Register& reg) {
-      stream << reg.getName()
-             << ":"
-             << std::dec << reg.getBitSize()
-             << " bv["
-             << reg.getHigh()
-             << ".."
-             << reg.getLow()
-             << "]";
-      return stream;
-    }
-
-
-    std::ostream& operator<<(std::ostream& stream, const Register* reg) {
-      stream << *reg;
-      return stream;
-    }
-
-
-    bool operator<(const Register& reg1, const Register& reg2) {
-      return (reg1.getId() < reg2.getId());
-    }
-
-  }; /* arch namespace */
-}; /* triton namespace */
+  bool operator<(const Register& reg1, const Register& reg2) {
+    return (reg1.getId() < reg2.getId());
+  }
+}
