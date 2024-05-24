@@ -240,11 +240,13 @@ namespace triton::arch
   }
 
 
-  void Architecture::disassembly(triton::arch::BasicBlock& block, triton::uint64 addr) const {
+  void Architecture::disassembly(triton::arch::BasicBlock& block, triton::uint64 addr) const 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::disassembly(): You must define an architecture.");
 
-    for (auto& inst : block.getInstructions()) {
+    for (auto& inst : block.getInstructions()) 
+    {
       inst.setAddress(addr);
       this->cpu->disassembly(inst);
       addr += inst.getSize();

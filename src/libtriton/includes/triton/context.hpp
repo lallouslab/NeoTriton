@@ -186,7 +186,8 @@ namespace triton
 
       // Returns the concrete value of a register.
       template<typename T>
-      T getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks=true) const {
+      T getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks=true) const 
+      {
         static_assert(std::is_integral<T>::value, "Template type T must be an integral type");
         triton::uint512 value = getConcreteRegisterValue(reg, execCallbacks);
         return static_cast<T>(value);
@@ -206,7 +207,10 @@ namespace triton
         * \details Note that by setting a concrete value will probably imply a desynchronization
         * with the symbolic state (if it exists). You should probably use the concretize functions after this.
         */
-      TRITON_EXPORT void setConcreteMemoryValue(const triton::arch::MemoryAccess& mem, const triton::uint512& value, bool execCallbacks=true);
+      TRITON_EXPORT void setConcreteMemoryValue(
+        const triton::arch::MemoryAccess& mem, 
+        const triton::uint512& value, 
+        bool execCallbacks=true);
 
       /*!
         * \brief [**architecture api**] - Sets the concrete value of a memory area.
@@ -214,7 +218,10 @@ namespace triton
         * \details Note that by setting a concrete value will probably imply a desynchronization
         * with the symbolic state (if it exists). You should probably use the concretize functions after this.
         */
-      TRITON_EXPORT void setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks=true);
+      TRITON_EXPORT void setConcreteMemoryAreaValue(
+        triton::uint64 baseAddr, 
+        const triton::bytes& values, 
+        bool execCallbacks=true);
 
       /*!
         * \brief [**architecture api**] - Sets the concrete value of a memory area.
@@ -230,7 +237,10 @@ namespace triton
         * \details Note that by setting a concrete value will probably imply a desynchronization
         * with the symbolic state (if it exists). You should probably use the concretize functions after this.
         */
-      TRITON_EXPORT void setConcreteRegisterValue(const triton::arch::Register& reg, const triton::uint512& value, bool execCallbacks=true);
+      TRITON_EXPORT void setConcreteRegisterValue(
+        const triton::arch::Register& reg, 
+        const triton::uint512& value, 
+        bool execCallbacks=true);
 
       // Defines a concrete state.
       TRITON_EXPORT void setConcreteState(triton::arch::Architecture& other);

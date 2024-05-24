@@ -443,7 +443,6 @@ arch::exception_e Context::processing(arch::Instruction& inst)
   return this->irBuilder->buildSemantics(inst);
 }
 
-
 arch::exception_e Context::processing(arch::BasicBlock& block, uint64 addr) 
 {
   this->checkArchitecture();
@@ -453,7 +452,8 @@ arch::exception_e Context::processing(arch::BasicBlock& block, uint64 addr)
 
 /* IR builder Context ================================================================================= */
 
-arch::exception_e Context::buildSemantics(arch::Instruction& inst) {
+arch::exception_e Context::buildSemantics(arch::Instruction& inst) 
+{
   this->checkIrBuilder();
   return this->irBuilder->buildSemantics(inst);
 }
@@ -464,12 +464,9 @@ arch::exception_e Context::buildSemantics(arch::BasicBlock& block) {
   return this->irBuilder->buildSemantics(block);
 }
 
-
 ast::SharedAstContext Context::getAstContext(void) {
   return this->astCtxt;
 }
-
-
 
 /* AST representation Context ========================================================================= */
 
@@ -477,20 +474,27 @@ ast::representations::mode_e Context::getAstRepresentationMode(void) const {
   return this->astCtxt->getRepresentationMode();
 }
 
-
 void Context::setAstRepresentationMode(ast::representations::mode_e mode) {
   this->astCtxt->setRepresentationMode(mode);
 }
 
-
-
 /* Callbacks Context ================================================================================= */
 
-template TRITON_EXPORT void Context::addCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::MemoryAccess&)> cb);
-template TRITON_EXPORT void Context::addCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::Register&)> cb);
-template TRITON_EXPORT void Context::addCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::MemoryAccess&, const uint512& value)> cb);
-template TRITON_EXPORT void Context::addCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::Register&, const uint512& value)> cb);
-template TRITON_EXPORT void Context::addCallback(callbacks::callback_e kind, ComparableFunctor<ast::SharedAbstractNode(Context&, const ast::SharedAbstractNode&)> cb);
+template TRITON_EXPORT void Context::addCallback(
+  callbacks::callback_e kind, 
+  callbacks::getConcreteMemoryValueCallback cb);
+template TRITON_EXPORT void Context::addCallback(
+  callbacks::callback_e kind, 
+  callbacks::getConcreteRegisterValueCallback cb);
+template TRITON_EXPORT void Context::addCallback(
+  callbacks::callback_e kind, 
+  callbacks::setConcreteMemoryValueCallback cb);
+template TRITON_EXPORT void Context::addCallback(
+  callbacks::callback_e kind, 
+  callbacks::setConcreteRegisterValueCallback cb);
+template TRITON_EXPORT void Context::addCallback(
+  callbacks::callback_e kind, 
+  callbacks::symbolicSimplificationCallback cb);
 
 template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::MemoryAccess&)> cb);
 template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::Register&)> cb);
@@ -498,11 +502,9 @@ template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, 
 template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::Register&, const uint512& value)> cb);
 template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<ast::SharedAbstractNode(Context&, const ast::SharedAbstractNode&)> cb);
 
-
 void Context::clearCallbacks(void) {
   this->callbacks.clearCallbacks();
 }
-
 
 ast::SharedAbstractNode Context::processCallbacks(callbacks::callback_e kind, ast::SharedAbstractNode node) {
   if (this->callbacks.isDefined()) {

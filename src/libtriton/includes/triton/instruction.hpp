@@ -24,7 +24,6 @@
 #include <triton/symbolicExpression.hpp>
 #include <triton/tritonTypes.hpp>
 
-//! The Triton namespace
 namespace triton::arch 
 {
   /*! \class Instruction
@@ -320,7 +319,5 @@ namespace triton::arch
 
   //! Displays an Instruction.
   TRITON_EXPORT std::ostream& operator<<(std::ostream& stream, const Instruction* inst);
-
-/*! @} End of arch namespace */
 }
 

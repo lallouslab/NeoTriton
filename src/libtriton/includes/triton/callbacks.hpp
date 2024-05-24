@@ -62,10 +62,11 @@ namespace triton
      * \details The callback takes a Context as first argument, a register as second argument and the value at third.
      * Callbacks will be called each time that the Triton library will need to PUT a concrete register value.
      */
-    using setConcreteRegisterValueCallback = ComparableFunctor<void(
-      triton::Context&, 
-      const triton::arch::Register&, 
-      const triton::uint512& value)>;
+    using setConcreteRegisterValueCallback = ComparableFunctor<
+      void(
+        triton::Context&, 
+        const triton::arch::Register&, 
+        const triton::uint512& value)>;
 
     /*! \brief The prototype of a SYMBOLIC_SIMPLIFICATION callback.
      *
@@ -73,7 +74,9 @@ namespace triton
      * The callback must return a valid abstract node which will be used as assignment according to the instruction semantics.
      * See also the page about \ref SMT_simplification_page for more information about semantic transformations.
      */
-    using symbolicSimplificationCallback = ComparableFunctor<triton::ast::SharedAbstractNode(triton::Context&, const triton::ast::SharedAbstractNode&)>;
+    using symbolicSimplificationCallback = ComparableFunctor<
+      triton::ast::SharedAbstractNode(
+        triton::Context&, const triton::ast::SharedAbstractNode&)>;
 
     // The callbacks class
     class Callbacks 

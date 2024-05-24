@@ -1248,8 +1248,10 @@ namespace triton::engines::symbolic
 
 
   /* Initializes the memory access AST (LOAD and STORE) */
-  void SymbolicEngine::initLeaAst(triton::arch::MemoryAccess& mem, bool force) {
-    if (mem.getBitSize() >= bitsize::byte) {
+  void SymbolicEngine::initLeaAst(triton::arch::MemoryAccess& mem, bool force) 
+  {
+    if (mem.getBitSize() >= bitsize::byte) 
+    {
       const triton::arch::Register& base  = mem.getConstBaseRegister();
       const triton::arch::Register& index = mem.getConstIndexRegister();
       const triton::arch::Register& seg   = mem.getConstSegmentRegister();
@@ -1279,7 +1281,7 @@ namespace triton::engines::symbolic
                                 dispAst
                               );
 
-      /* Use segments as base address instead of selector into the GDT. */
+      // Use segments as base address instead of selector into the GDT.
       if (this->architecture->isRegisterValid(seg)) {
         leaAst = this->astCtxt->bvadd(
                     this->getRegisterAst(seg),
@@ -1290,19 +1292,18 @@ namespace triton::engines::symbolic
       /* Set AST */
       mem.setLeaAst(leaAst);
 
-      /* Initialize the address only if it is not already defined */
+      // Initialize the address only if it is not already defined
       if (!mem.getAddress() || force)
         mem.setAddress(static_cast<triton::uint64>(leaAst->evaluate()));
     }
   }
 
-
   triton::uint512 SymbolicEngine::getConcreteVariableValue(const SharedSymbolicVariable& symVar) const {
     return this->astCtxt->getVariableValue(symVar->getName());
   }
 
-
-  void SymbolicEngine::setConcreteVariableValue(const SharedSymbolicVariable& symVar, const triton::uint512& value) {
+  void SymbolicEngine::setConcreteVariableValue(const SharedSymbolicVariable& symVar, const triton::uint512& value) 
+  {
     triton::uint512 max = -1;
 
     /* Check if the value is too big */
@@ -1329,14 +1330,12 @@ namespace triton::engines::symbolic
     }
   }
 
-
-  inline bool SymbolicEngine::isAlignedMode(void) const {
+  inline bool SymbolicEngine::isAlignedMode(void) const 
+  {
     return this->modes->isModeEnabled(triton::modes::ALIGNED_MEMORY);
   }
-
 
   inline bool SymbolicEngine::isArrayMode(void) const {
     return this->modes->isModeEnabled(triton::modes::MEMORY_ARRAY);
   }
 }
-  

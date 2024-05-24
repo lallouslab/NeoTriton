@@ -627,7 +627,8 @@ namespace triton {
       }
 
 
-      triton::uint512 x8664Cpu::getConcreteMemoryValue(const triton::arch::MemoryAccess& mem, bool execCallbacks) const {
+      triton::uint512 x8664Cpu::getConcreteMemoryValue(const triton::arch::MemoryAccess& mem, bool execCallbacks) const 
+      {
         triton::uint512 ret = 0;
         triton::uint64 addr = 0;
         triton::uint32 size = 0;
