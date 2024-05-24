@@ -184,7 +184,8 @@ const arch::Instruction Context::getNopInstruction(void) const {
 }
 
 
-const std::unordered_map<arch::register_e, const arch::Register>& Context::getAllRegisters(void) const {
+const std::unordered_map<arch::register_e, const arch::Register>& Context::getAllRegisters(void) const 
+{
   this->checkArchitecture();
   return this->arch.getAllRegisters();
 }
@@ -285,27 +286,27 @@ void Context::setConcreteRegisterValue(const arch::Register& reg, const uint512&
 }
 
 
-void Context::setConcreteState(arch::Architecture& other) {
-  if (this->getArchitecture() != other.getArchitecture()) {
+void Context::setConcreteState(arch::Architecture& other) 
+{
+  if (this->getArchitecture() != other.getArchitecture())
     throw exceptions::Engines("Context::setConcreteState(): Not the same architecture.");
-  }
 
   switch (this->getArchitecture())
   {
-  case arch::ARCH_X86_64:
-    *static_cast<arch::x86::x8664Cpu*>(this->getCpuInstance()) = *static_cast<arch::x86::x8664Cpu*>(other.getCpuInstance());
-    break;
-  case arch::ARCH_X86:
-    *static_cast<arch::x86::x86Cpu*>(this->getCpuInstance()) = *static_cast<arch::x86::x86Cpu*>(other.getCpuInstance());
-    break;
-  case arch::ARCH_ARM32:
-    *static_cast<arch::arm::arm32::Arm32Cpu*>(this->getCpuInstance()) = *static_cast<arch::arm::arm32::Arm32Cpu*>(other.getCpuInstance());
-    break;
-  case arch::ARCH_AARCH64:
-    *static_cast<arch::arm::aarch64::AArch64Cpu*>(this->getCpuInstance()) = *static_cast<arch::arm::aarch64::AArch64Cpu*>(other.getCpuInstance());
-    break;
-  default:
-    throw exceptions::Engines("Context::setConcreteState(): Invalid architecture.");
+    case arch::ARCH_X86_64:
+      *static_cast<arch::x86::x8664Cpu*>(this->getCpuInstance()) = *static_cast<arch::x86::x8664Cpu*>(other.getCpuInstance());
+      break;
+    case arch::ARCH_X86:
+      *static_cast<arch::x86::x86Cpu*>(this->getCpuInstance()) = *static_cast<arch::x86::x86Cpu*>(other.getCpuInstance());
+      break;
+    case arch::ARCH_ARM32:
+      *static_cast<arch::arm::arm32::Arm32Cpu*>(this->getCpuInstance()) = *static_cast<arch::arm::arm32::Arm32Cpu*>(other.getCpuInstance());
+      break;
+    case arch::ARCH_AARCH64:
+      *static_cast<arch::arm::aarch64::AArch64Cpu*>(this->getCpuInstance()) = *static_cast<arch::arm::aarch64::AArch64Cpu*>(other.getCpuInstance());
+      break;
+    default:
+      throw exceptions::Engines("Context::setConcreteState(): Invalid architecture.");
   }
 
   this->concretizeAllMemory();
@@ -860,7 +861,8 @@ bool Context::isRegisterSymbolized(const arch::Register& reg) const {
 }
 
 
-void Context::concretizeAllMemory(void) {
+void Context::concretizeAllMemory(void) 
+{
   this->checkSymbolic();
   this->symbolic->concretizeAllMemory();
 }

@@ -156,169 +156,165 @@ Z3's simplification passes and your own rules.
 */
 
 
+namespace triton::engines::symbolic 
+{
+  SymbolicSimplification::SymbolicSimplification(triton::arch::Architecture* architecture, triton::callbacks::Callbacks* callbacks) 
+  {
+    this->architecture = architecture;
+    this->callbacks = callbacks;
+  }
 
 
-namespace triton {
-  namespace engines {
-    namespace symbolic {
+  SymbolicSimplification::SymbolicSimplification(const SymbolicSimplification& other) {
+    this->copy(other);
+  }
 
+  void SymbolicSimplification::copy(const SymbolicSimplification& other) {
+    this->architecture = other.architecture;
+    this->callbacks = other.callbacks;
+  }
 
-      SymbolicSimplification::SymbolicSimplification(triton::arch::Architecture* architecture, triton::callbacks::Callbacks* callbacks) {
-        this->architecture = architecture;
-        this->callbacks = callbacks;
-      }
+  triton::ast::SharedAbstractNode SymbolicSimplification::simplify(const triton::ast::SharedAbstractNode& node) const 
+  {
+    std::list<triton::ast::SharedAbstractNode> worklist;
+    triton::ast::SharedAbstractNode snode = node;
 
+    if (node == nullptr)
+      throw triton::exceptions::SymbolicSimplification("SymbolicSimplification::simplify(): node cannot be null.");
 
-      SymbolicSimplification::SymbolicSimplification(const SymbolicSimplification& other) {
-        this->copy(other);
-      }
-
-
-      void SymbolicSimplification::copy(const SymbolicSimplification& other) {
-        this->architecture = other.architecture;
-        this->callbacks = other.callbacks;
-      }
-
-
-      triton::ast::SharedAbstractNode SymbolicSimplification::simplify(const triton::ast::SharedAbstractNode& node) const {
-        std::list<triton::ast::SharedAbstractNode> worklist;
-        triton::ast::SharedAbstractNode snode = node;
-
-        if (node == nullptr)
-          throw triton::exceptions::SymbolicSimplification("SymbolicSimplification::simplify(): node cannot be null.");
-
-        if (this->callbacks && this->callbacks->isDefined(triton::callbacks::SYMBOLIC_SIMPLIFICATION)) {
-          snode = this->callbacks->processCallbacks(triton::callbacks::SYMBOLIC_SIMPLIFICATION, node);
-          /*
-           *  We use a worklist strategy to avoid recursive calls
-           *  and so stack overflow when going through a big AST.
-           */
-          worklist.push_back(snode);
-          while (worklist.size()) {
-            auto ast = worklist.front();
-            worklist.pop_front();
-            bool needs_update = false;
-            for (triton::uint32 index = 0; index < ast->getChildren().size(); index++) {
-              auto child = ast->getChildren()[index];
-              /* Don't apply simplification on nodes like String, Integer, etc. */
-              if (child->getBitvectorSize()) {
-                auto schild = this->callbacks->processCallbacks(triton::callbacks::SYMBOLIC_SIMPLIFICATION, child);
-                ast->setChild(index, schild);
-                needs_update |= !schild->canReplaceNodeWithoutUpdate(child);
-                worklist.push_back(schild);
-              }
-            }
-            if (needs_update) {
-              ast->init(true);
-            }
+    if (this->callbacks && this->callbacks->isDefined(triton::callbacks::SYMBOLIC_SIMPLIFICATION)) 
+    {
+      snode = this->callbacks->processCallbacks(triton::callbacks::SYMBOLIC_SIMPLIFICATION, node);
+      /*
+        *  We use a worklist strategy to avoid recursive calls
+        *  and so stack overflow when going through a big AST.
+        */
+      worklist.push_back(snode);
+      while (worklist.size()) 
+      {
+        auto ast = worklist.front();
+        worklist.pop_front();
+        bool needs_update = false;
+        for (triton::uint32 index = 0; index < ast->getChildren().size(); index++) 
+        {
+          auto child = ast->getChildren()[index];
+          // Don't apply simplification on nodes like String, Integer, etc.
+          if (child->getBitvectorSize()) 
+          {
+            auto schild = this->callbacks->processCallbacks(triton::callbacks::SYMBOLIC_SIMPLIFICATION, child);
+            ast->setChild(index, schild);
+            needs_update |= !schild->canReplaceNodeWithoutUpdate(child);
+            worklist.push_back(schild);
           }
         }
-
-        return snode;
+        if (needs_update)
+          ast->init(true);
       }
+    }
+
+    return snode;
+  }
 
 
-      triton::arch::BasicBlock SymbolicSimplification::simplify(const triton::arch::BasicBlock& block, bool padding) const {
-        return this->deadStoreElimination(block, padding);
+  triton::arch::BasicBlock SymbolicSimplification::simplify(const triton::arch::BasicBlock& block, bool padding) const {
+    return this->deadStoreElimination(block, padding);
+  }
+
+  triton::arch::BasicBlock SymbolicSimplification::deadStoreElimination(const triton::arch::BasicBlock& block, bool padding) const 
+  {
+    std::unordered_map<triton::usize, SharedSymbolicExpression> lifetime;
+    std::map<triton::uint64, triton::arch::Instruction> instructions;
+    triton::arch::BasicBlock out;
+    triton::arch::BasicBlock in = block;
+
+    if (block.getSize() == 0)
+      return {};
+
+    /* Define a temporary Context */
+    triton::Context tmpctx(this->architecture->getArchitecture());
+
+    /* Synch the concrete state */
+    tmpctx.setConcreteState(*this->architecture);
+
+    /* Execute the block */
+    tmpctx.processing(in);
+
+    /* Get all symbolic registers that were written */
+    for (auto& reg : tmpctx.getSymbolicRegisters()) 
+    {
+      for (auto& item : tmpctx.sliceExpressions(reg.second)) {
+        lifetime[item.first] = item.second;
       }
+    }
 
-
-      triton::arch::BasicBlock SymbolicSimplification::deadStoreElimination(const triton::arch::BasicBlock& block, bool padding) const {
-        std::unordered_map<triton::usize, SharedSymbolicExpression> lifetime;
-        std::map<triton::uint64, triton::arch::Instruction> instructions;
-        triton::arch::BasicBlock out;
-        triton::arch::BasicBlock in = block;
-
-        if (block.getSize() == 0)
-          return {};
-
-        /* Define a temporary Context */
-        triton::Context tmpctx(this->architecture->getArchitecture());
-
-        /* Synch the concrete state */
-        tmpctx.setConcreteState(*this->architecture);
-
-        /* Execute the block */
-        tmpctx.processing(in);
-
-        /* Get all symbolic registers that were written */
-        for (auto& reg : tmpctx.getSymbolicRegisters()) {
-          for (auto& item : tmpctx.sliceExpressions(reg.second)) {
-            lifetime[item.first] = item.second;
-          }
-        }
-
-        /* Get all symbolic memory cells that were written */
-        for (auto& mem : tmpctx.getSymbolicMemory()) {
-          for (auto& item : tmpctx.sliceExpressions(mem.second)) {
-            lifetime[item.first] = item.second;
-          }
-        }
-
-        /* Keep instructions that build effective addresses (see #1174) */
-        for (auto& inst : in.getInstructions()) {
-          std::set<std::pair<triton::arch::MemoryAccess, triton::ast::SharedAbstractNode>> access;
-          if (inst.isMemoryWrite()) {
-            access = inst.getStoreAccess();
-          }
-          if (inst.isMemoryRead()) {
-            access.insert(inst.getLoadAccess().begin(), inst.getLoadAccess().end());
-          }
-          for (const auto& x : access) {
-            auto refs = triton::ast::search(x.second, triton::ast::REFERENCE_NODE);
-            for (const auto& ref : refs) {
-              auto expr = reinterpret_cast<triton::ast::ReferenceNode*>(ref.get())->getSymbolicExpression();
-              auto eid = expr->getId();
-              lifetime[eid] = expr;
-            }
-            if (x.first.getLeaAst()) {
-              auto refs = triton::ast::search(x.first.getLeaAst(), triton::ast::REFERENCE_NODE);
-              for (const auto& ref : refs) {
-                auto expr = reinterpret_cast<triton::ast::ReferenceNode*>(ref.get())->getSymbolicExpression();
-                auto eid = expr->getId();
-                lifetime[eid] = expr;
-              }
-            }
-          }
-        }
-
-        /* Get back the origin assembly of expressions that still alive */
-        for (auto& se : lifetime) {
-          if (se.second->getDisassembly().empty()) {
-            continue;
-          }
-          auto addr = se.second->getAddress();
-          for (auto& inst : in.getInstructions()) {
-            if (inst.getAddress() == addr) {
-              instructions[addr] = inst;
-              break;
-            }
-          }
-        }
-
-        /* Create a new block with sorted instructions */
-        auto lastaddr = in.getFirstAddress();
-        auto nop = tmpctx.getNopInstruction();
-        for (auto& item : instructions) {
-          if (padding) {
-            while (item.second.getAddress() > lastaddr) {
-              out.add(nop);
-              lastaddr += nop.getSize();
-            }
-          }
-          out.add(item.second);
-          lastaddr = item.second.getNextAddress();
-        }
-
-        return out;
+    /* Get all symbolic memory cells that were written */
+    for (auto& mem : tmpctx.getSymbolicMemory()) {
+      for (auto& item : tmpctx.sliceExpressions(mem.second)) {
+        lifetime[item.first] = item.second;
       }
+    }
 
-
-      SymbolicSimplification& SymbolicSimplification::operator=(const SymbolicSimplification& other) {
-        this->copy(other);
-        return *this;
+    /* Keep instructions that build effective addresses (see #1174) */
+    for (auto& inst : in.getInstructions()) {
+      std::set<std::pair<triton::arch::MemoryAccess, triton::ast::SharedAbstractNode>> access;
+      if (inst.isMemoryWrite()) {
+        access = inst.getStoreAccess();
       }
+      if (inst.isMemoryRead()) {
+        access.insert(inst.getLoadAccess().begin(), inst.getLoadAccess().end());
+      }
+      for (const auto& x : access) {
+        auto refs = triton::ast::search(x.second, triton::ast::REFERENCE_NODE);
+        for (const auto& ref : refs) {
+          auto expr = reinterpret_cast<triton::ast::ReferenceNode*>(ref.get())->getSymbolicExpression();
+          auto eid = expr->getId();
+          lifetime[eid] = expr;
+        }
+        if (x.first.getLeaAst()) {
+          auto refs = triton::ast::search(x.first.getLeaAst(), triton::ast::REFERENCE_NODE);
+          for (const auto& ref : refs) {
+            auto expr = reinterpret_cast<triton::ast::ReferenceNode*>(ref.get())->getSymbolicExpression();
+            auto eid = expr->getId();
+            lifetime[eid] = expr;
+          }
+        }
+      }
+    }
 
-    }; /* symbolic namespace */
-  }; /* engines namespace */
-}; /*triton namespace */
+    /* Get back the origin assembly of expressions that still alive */
+    for (auto& se : lifetime) {
+      if (se.second->getDisassembly().empty()) {
+        continue;
+      }
+      auto addr = se.second->getAddress();
+      for (auto& inst : in.getInstructions()) {
+        if (inst.getAddress() == addr) {
+          instructions[addr] = inst;
+          break;
+        }
+      }
+    }
+
+    /* Create a new block with sorted instructions */
+    auto lastaddr = in.getFirstAddress();
+    auto nop = tmpctx.getNopInstruction();
+    for (auto& item : instructions) {
+      if (padding) {
+        while (item.second.getAddress() > lastaddr) {
+          out.add(nop);
+          lastaddr += nop.getSize();
+        }
+      }
+      out.add(item.second);
+      lastaddr = item.second.getNextAddress();
+    }
+
+    return out;
+  }
+
+
+  SymbolicSimplification& SymbolicSimplification::operator=(const SymbolicSimplification& other) {
+    this->copy(other);
+    return *this;
+  }
+}

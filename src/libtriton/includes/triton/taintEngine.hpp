@@ -5,8 +5,7 @@
 **  This program is under the terms of the Apache License 2.0.
 */
 
-#ifndef TRITON_TAINTENGINE_H
-#define TRITON_TAINTENGINE_H
+#pragma once
 
 #include <unordered_set>
 
@@ -17,197 +16,170 @@
 #include <triton/symbolicEngine.hpp>
 #include <triton/tritonTypes.hpp>
 
+namespace triton::engines::taint
+{
+  //! Defines a tainted item.
+  constexpr bool TAINTED = true;
 
+  //! Defines an untainted item.
+  constexpr bool UNTAINTED = !TAINTED;
 
-//! The Triton namespace
-namespace triton {
-/*!
- *  \addtogroup triton
- *  @{
- */
+  /*! \class TaintEngine
+      \brief The taint engine class. */
+  class TaintEngine
+  {
+  private:
+    //! Modes API
+    triton::modes::SharedModes modes;
 
-  //! The Engines namespace
-  namespace engines {
-  /*!
-   *  \ingroup triton
-   *  \addtogroup engines
-   *  @{
-   */
+    //! Symbolic Engine API
+    triton::engines::symbolic::SymbolicEngine* symbolicEngine;
 
-    //! The Taint namespace
-    namespace taint {
-    /*!
-     *  \ingroup engines
-     *  \addtogroup taint
-     *  @{
-     */
+    //! CPU API
+    triton::arch::CpuInterface& cpu;
 
-      //! Defines a tainted item.
-      const bool TAINTED = true;
+  protected:
+    //! The set of tainted addresses.
+    std::unordered_set<triton::uint64> taintedMemory;
 
-      //! Defines an untainted item.
-      const bool UNTAINTED = !TAINTED;
+    //! The set of tainted registers. Currently it is an over approximation of the taint.
+    std::unordered_set<triton::arch::register_e> taintedRegisters;
 
-      /*! \class TaintEngine
-          \brief The taint engine class. */
-      class TaintEngine {
-        private:
-          //! Modes API
-          triton::modes::SharedModes modes;
+  public:
+    //! Constructor.
+    TRITON_EXPORT TaintEngine(
+      const triton::modes::SharedModes& modes, 
+      triton::engines::symbolic::SymbolicEngine* symbolicEngine, 
+      triton::arch::CpuInterface& cpu);
 
-          //! Symbolic Engine API
-          triton::engines::symbolic::SymbolicEngine* symbolicEngine;
+    //! Constructor by copy.
+    TRITON_EXPORT TaintEngine(const TaintEngine& other);
 
-          //! Cpu API
-          triton::arch::CpuInterface& cpu;
+    //! Copies a TaintEngine.
+    TRITON_EXPORT TaintEngine& operator=(const TaintEngine& other);
 
-        protected:
-          //! The set of tainted addresses.
-          std::unordered_set<triton::uint64> taintedMemory;
+    //! Returns the tainted addresses.
+    TRITON_EXPORT const std::unordered_set<triton::uint64>& getTaintedMemory(void) const;
 
-          //! The set of tainted registers. Currently it is an over approximation of the taint.
-          std::unordered_set<triton::arch::register_e> taintedRegisters;
+    //! Returns the tainted registers.
+    TRITON_EXPORT std::unordered_set<const triton::arch::Register*> getTaintedRegisters(void) const;
 
-        public:
-          //! Constructor.
-          TRITON_EXPORT TaintEngine(const triton::modes::SharedModes& modes, triton::engines::symbolic::SymbolicEngine* symbolicEngine, triton::arch::CpuInterface& cpu);
+    //! Returns true if the addr is tainted.
+    TRITON_EXPORT bool isMemoryTainted(triton::uint64 addr, triton::uint32 size = 1) const;
 
-          //! Constructor by copy.
-          TRITON_EXPORT TaintEngine(const TaintEngine& other);
+    //! Returns true if the memory is tainted.
+    TRITON_EXPORT bool isMemoryTainted(const triton::arch::MemoryAccess& mem, bool mode = true) const;
 
-          //! Copies a TaintEngine.
-          TRITON_EXPORT TaintEngine& operator=(const TaintEngine& other);
+    //! Returns true if the register is tainted.
+    TRITON_EXPORT bool isRegisterTainted(const triton::arch::Register& reg) const;
 
-          //! Returns the tainted addresses.
-          TRITON_EXPORT const std::unordered_set<triton::uint64>& getTaintedMemory(void) const;
+    //! Abstract taint verification. Returns true if the operand is tainted.
+    TRITON_EXPORT bool isTainted(const triton::arch::OperandWrapper& op) const;
 
-          //! Returns the tainted registers.
-          TRITON_EXPORT std::unordered_set<const triton::arch::Register*> getTaintedRegisters(void) const;
+    //! Sets the flag (taint or untaint) to an abstract operand (Register or Memory).
+    TRITON_EXPORT bool setTaint(const triton::arch::OperandWrapper& op, bool flag);
 
-          //! Returns true if the addr is tainted.
-          TRITON_EXPORT bool isMemoryTainted(triton::uint64 addr, triton::uint32 size=1) const;
+    //! Sets the flag (taint or untaint) to a memory.
+    TRITON_EXPORT bool setTaintMemory(const triton::arch::MemoryAccess& mem, bool flag);
 
-          //! Returns true if the memory is tainted.
-          TRITON_EXPORT bool isMemoryTainted(const triton::arch::MemoryAccess& mem, bool mode=true) const;
+    //! Sets the flag (taint or untaint) to a register.
+    TRITON_EXPORT bool setTaintRegister(const triton::arch::Register& reg, bool flag);
 
-          //! Returns true if the register is tainted.
-          TRITON_EXPORT bool isRegisterTainted(const triton::arch::Register& reg) const;
+    //! Taints an address. Returns TAINTED if the address has been tainted correctly. Otherwise it returns the last defined state.
+    TRITON_EXPORT bool taintMemory(triton::uint64 addr);
 
-          //! Abstract taint verification. Returns true if the operand is tainted.
-          TRITON_EXPORT bool isTainted(const triton::arch::OperandWrapper& op) const;
+    //! Taints a memory. Returns TAINTED if the memory has been tainted correctly. Otherwise it returns the last defined state.
+    TRITON_EXPORT bool taintMemory(const triton::arch::MemoryAccess& mem);
 
-          //! Sets the flag (taint or untaint) to an abstract operand (Register or Memory).
-          TRITON_EXPORT bool setTaint(const triton::arch::OperandWrapper& op, bool flag);
+    //! Taints a register. Returns TAINTED if the register has been tainted correctly. Otherwise it returns the last defined state.
+    TRITON_EXPORT bool taintRegister(const triton::arch::Register& reg);
 
-          //! Sets the flag (taint or untaint) to a memory.
-          TRITON_EXPORT bool setTaintMemory(const triton::arch::MemoryAccess& mem, bool flag);
+    //! Untaints an address. Returns !TAINTED if the address has been untainted correctly. Otherwise it returns the last defined state.
+    TRITON_EXPORT bool untaintMemory(triton::uint64 addr);
 
-          //! Sets the flag (taint or untaint) to a register.
-          TRITON_EXPORT bool setTaintRegister(const triton::arch::Register& reg, bool flag);
+    //! Untaints a memory. Returns !TAINTED if the memory has been untainted correctly. Otherwise it returns the last defined state.
+    TRITON_EXPORT bool untaintMemory(const triton::arch::MemoryAccess& mem);
 
-          //! Taints an address. Returns TAINTED if the address has been tainted correctly. Otherwise it returns the last defined state.
-          TRITON_EXPORT bool taintMemory(triton::uint64 addr);
+    //! Untaints a register. Returns !TAINTED if the register has been untainted correctly. Otherwise it returns the last defined state.
+    TRITON_EXPORT bool untaintRegister(const triton::arch::Register& reg);
 
-          //! Taints a memory. Returns TAINTED if the memory has been tainted correctly. Otherwise it returns the last defined state.
-          TRITON_EXPORT bool taintMemory(const triton::arch::MemoryAccess& mem);
+    //! Abstract union tainting.
+    TRITON_EXPORT bool taintUnion(const triton::arch::OperandWrapper& op1, const triton::arch::OperandWrapper& op2);
 
-          //! Taints a register. Returns TAINTED if the register has been tainted correctly. Otherwise it returns the last defined state.
-          TRITON_EXPORT bool taintRegister(const triton::arch::Register& reg);
+    //! Taints MemoryImmediate with union. Returns true if the memDst is TAINTED.
+    TRITON_EXPORT bool taintUnion(const triton::arch::MemoryAccess& memDst, const triton::arch::Immediate& imm);
 
-          //! Untaints an address. Returns !TAINTED if the address has been untainted correctly. Otherwise it returns the last defined state.
-          TRITON_EXPORT bool untaintMemory(triton::uint64 addr);
+    //! Taints MemoryMemory with union. Returns true if the memDst or memSrc are TAINTED.
+    TRITON_EXPORT bool taintUnion(const triton::arch::MemoryAccess& memDst, const triton::arch::MemoryAccess& memSrc);
 
-          //! Untaints a memory. Returns !TAINTED if the memory has been untainted correctly. Otherwise it returns the last defined state.
-          TRITON_EXPORT bool untaintMemory(const triton::arch::MemoryAccess& mem);
+    //! Taints MemoryRegister with union. Returns true if the memDst or regSrc are TAINTED.
+    TRITON_EXPORT bool taintUnion(const triton::arch::MemoryAccess& memDst, const triton::arch::Register& regSrc);
 
-          //! Untaints a register. Returns !TAINTED if the register has been untainted correctly. Otherwise it returns the last defined state.
-          TRITON_EXPORT bool untaintRegister(const triton::arch::Register& reg);
+    //! Taints RegisterImmediate with union. Returns true if the regDst is TAINTED.
+    TRITON_EXPORT bool taintUnion(const triton::arch::Register& regDst, const triton::arch::Immediate& imm);
 
-          //! Abstract union tainting.
-          TRITON_EXPORT bool taintUnion(const triton::arch::OperandWrapper& op1, const triton::arch::OperandWrapper& op2);
+    //! Taints RegisterMemory with union. Returns true if the regDst or memSrc are TAINTED.
+    TRITON_EXPORT bool taintUnion(const triton::arch::Register& regDst, const triton::arch::MemoryAccess& memSrc);
 
-          //! Taints MemoryImmediate with union. Returns true if the memDst is TAINTED.
-          TRITON_EXPORT bool taintUnion(const triton::arch::MemoryAccess& memDst, const triton::arch::Immediate& imm);
+    //! Taints RegisterRegister with union. Returns true if the regDst or regSrc are TAINTED.
+    TRITON_EXPORT bool taintUnion(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
 
-          //! Taints MemoryMemory with union. Returns true if the memDst or memSrc are TAINTED.
-          TRITON_EXPORT bool taintUnion(const triton::arch::MemoryAccess& memDst, const triton::arch::MemoryAccess& memSrc);
+    //! Abstract assignment tainting.
+    TRITON_EXPORT bool taintAssignment(const triton::arch::OperandWrapper& op1, const triton::arch::OperandWrapper& op2);
 
-          //! Taints MemoryRegister with union. Returns true if the memDst or regSrc are TAINTED.
-          TRITON_EXPORT bool taintUnion(const triton::arch::MemoryAccess& memDst, const triton::arch::Register& regSrc);
+    //! Taints MemoryImmediate with assignment. Returns always false.
+    TRITON_EXPORT bool taintAssignment(const triton::arch::MemoryAccess& memDst, const triton::arch::Immediate& imm);
 
-          //! Taints RegisterImmediate with union. Returns true if the regDst is TAINTED.
-          TRITON_EXPORT bool taintUnion(const triton::arch::Register& regDst, const triton::arch::Immediate& imm);
+    //! Taints MemoryMemory with assignment. Returns true if the memDst is tainted.
+    TRITON_EXPORT bool taintAssignment(const triton::arch::MemoryAccess& memDst, const triton::arch::MemoryAccess& memSrc);
 
-          //! Taints RegisterMemory with union. Returns true if the regDst or memSrc are TAINTED.
-          TRITON_EXPORT bool taintUnion(const triton::arch::Register& regDst, const triton::arch::MemoryAccess& memSrc);
+    //! Taints MemoryRegister with assignment. Returns true if the memDst is tainted.
+    TRITON_EXPORT bool taintAssignment(const triton::arch::MemoryAccess& memDst, const triton::arch::Register& regSrc);
 
-          //! Taints RegisterRegister with union. Returns true if the regDst or regSrc are TAINTED.
-          TRITON_EXPORT bool taintUnion(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
+    //! Taints RegisterImmediate with assignment. Returns always false.
+    TRITON_EXPORT bool taintAssignment(const triton::arch::Register& regDst, const triton::arch::Immediate& imm);
 
-          //! Abstract assignment tainting.
-          TRITON_EXPORT bool taintAssignment(const triton::arch::OperandWrapper& op1, const triton::arch::OperandWrapper& op2);
+    //! Taints RegisterMemory with assignment. Returns true if the regDst is tainted.
+    TRITON_EXPORT bool taintAssignment(const triton::arch::Register& regDst, const triton::arch::MemoryAccess& memSrc);
 
-          //! Taints MemoryImmediate with assignment. Returns always false.
-          TRITON_EXPORT bool taintAssignment(const triton::arch::MemoryAccess& memDst,  const triton::arch::Immediate& imm);
+    //! Taints RegisterRegister with assignment. Returns true if the regDst is tainted.
+    TRITON_EXPORT bool taintAssignment(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
 
-          //! Taints MemoryMemory with assignment. Returns true if the memDst is tainted.
-          TRITON_EXPORT bool taintAssignment(const triton::arch::MemoryAccess& memDst, const triton::arch::MemoryAccess& memSrc);
+  private:
+    //! Spreads MemoryImmediate with union.
+    bool unionMemoryImmediate(const triton::arch::MemoryAccess& memDst);
 
-          //! Taints MemoryRegister with assignment. Returns true if the memDst is tainted.
-          TRITON_EXPORT bool taintAssignment(const triton::arch::MemoryAccess& memDst, const triton::arch::Register& regSrc);
+    //! Spreads MemoryMemory with union.
+    bool unionMemoryMemory(const triton::arch::MemoryAccess& memDst, const triton::arch::MemoryAccess& memSrc);
 
-          //! Taints RegisterImmediate with assignment. Returns always false.
-          TRITON_EXPORT bool taintAssignment(const triton::arch::Register& regDst,  const triton::arch::Immediate& imm);
+    //! Spreads MemoryRegister with union.
+    bool unionMemoryRegister(const triton::arch::MemoryAccess& memDst, const triton::arch::Register& regSrc);
 
-          //! Taints RegisterMemory with assignment. Returns true if the regDst is tainted.
-          TRITON_EXPORT bool taintAssignment(const triton::arch::Register& regDst, const triton::arch::MemoryAccess& memSrc);
+    //! Spreads RegisterImmediate with union.
+    bool unionRegisterImmediate(const triton::arch::Register& regDst);
 
-          //! Taints RegisterRegister with assignment. Returns true if the regDst is tainted.
-          TRITON_EXPORT bool taintAssignment(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
+    //! Spreads RegisterMemory with union.
+    bool unionRegisterMemory(const triton::arch::Register& regDst, const triton::arch::MemoryAccess& memSrc);
 
-        private:
-          //! Spreads MemoryImmediate with union.
-          bool unionMemoryImmediate(const triton::arch::MemoryAccess& memDst);
+    //! Spreads RegisterRegister with union.
+    bool unionRegisterRegister(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
 
-          //! Spreads MemoryMemory with union.
-          bool unionMemoryMemory(const triton::arch::MemoryAccess& memDst, const triton::arch::MemoryAccess& memSrc);
+    //! Spreads MemoryImmediate with assignment.
+    bool assignmentMemoryImmediate(const triton::arch::MemoryAccess& memDst);
 
-          //! Spreads MemoryRegister with union.
-          bool unionMemoryRegister(const triton::arch::MemoryAccess& memDst, const triton::arch::Register& regSrc);
+    //! Spreads MemoryMemory with assignment.
+    bool assignmentMemoryMemory(const triton::arch::MemoryAccess& memDst, const triton::arch::MemoryAccess& memSrc);
 
-          //! Spreads RegisterImmediate with union.
-          bool unionRegisterImmediate(const triton::arch::Register& regDst);
+    //! Spreads MemoryRegister with assignment.
+    bool assignmentMemoryRegister(const triton::arch::MemoryAccess& memDst, const triton::arch::Register& regSrc);
 
-          //! Spreads RegisterMemory with union.
-          bool unionRegisterMemory(const triton::arch::Register& regDst, const triton::arch::MemoryAccess& memSrc);
+    //! Spreads RegisterImmediate with assignment.
+    bool assignmentRegisterImmediate(const triton::arch::Register& regDst);
 
-          //! Spreads RegisterRegister with union.
-          bool unionRegisterRegister(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
+    //! Spreads RegisterMemory with assignment.
+    bool assignmentRegisterMemory(const triton::arch::Register& regDst, const triton::arch::MemoryAccess& memSrc);
 
-          //! Spreads MemoryImmediate with assignment.
-          bool assignmentMemoryImmediate(const triton::arch::MemoryAccess& memDst);
-
-          //! Spreads MemoryMemory with assignment.
-          bool assignmentMemoryMemory(const triton::arch::MemoryAccess& memDst, const triton::arch::MemoryAccess& memSrc);
-
-          //! Spreads MemoryRegister with assignment.
-          bool assignmentMemoryRegister(const triton::arch::MemoryAccess& memDst, const triton::arch::Register& regSrc);
-
-          //! Spreads RegisterImmediate with assignment.
-          bool assignmentRegisterImmediate(const triton::arch::Register& regDst);
-
-          //! Spreads RegisterMemory with assignment.
-          bool assignmentRegisterMemory(const triton::arch::Register& regDst, const triton::arch::MemoryAccess& memSrc);
-
-          //! Spreads RegisterRegister with assignment.
-          bool assignmentRegisterRegister(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
-      };
-
-    /*! @} End of taint namespace */
-    };
-  /*! @} End of engines namespace */
+    //! Spreads RegisterRegister with assignment.
+    bool assignmentRegisterRegister(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
   };
-/*! @} End of triton namespace */
-};
-
-#endif /* !__TRITON_TAINTENGINE_H__ */
+}
