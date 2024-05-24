@@ -170,7 +170,8 @@ namespace triton::arch
   }
 
 
-  const std::unordered_map<triton::arch::register_e, const triton::arch::Register>& Architecture::getAllRegisters(void) const {
+  const std::unordered_map<triton::arch::register_e, const triton::arch::Register>& Architecture::getAllRegisters(void) const 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::getAllRegisters(): You must define an architecture.");
     return this->cpu->getAllRegisters();
@@ -385,7 +386,8 @@ namespace triton::arch
   }
 
 
-  const triton::arch::Instruction Architecture::getNopInstruction(void) const {
+  const triton::arch::Instruction Architecture::getNopInstruction(void) const 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::getNopInstruction(): You must define an architecture.");
 
