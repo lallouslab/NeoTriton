@@ -115,22 +115,16 @@ namespace triton::callbacks
       this->defined = false;
   }
 
+  void Callbacks::removeCallback(triton::callbacks::callback_e kind, setConcreteMemoryValueCallback cb) 
+  {
+    if (kind != triton::callbacks::SET_CONCRETE_MEMORY_VALUE)
+      throw triton::exceptions::Exception("Incorrect callback kind for removal");
 
-  void Callbacks::removeCallback(triton::callbacks::callback_e kind, ComparableFunctor<void(triton::Context&, const triton::arch::MemoryAccess&, const triton::uint512& value)> cb) {
-    switch (kind) {
-      case triton::callbacks::SET_CONCRETE_MEMORY_VALUE:
-        this->removeSingleCallback(this->setConcreteMemoryValueCallbacks, cb);
-        break;
+    this->removeSingleCallback(this->setConcreteMemoryValueCallbacks, cb);
 
-      default:
-        throw triton::exceptions::Exception("Incorrect callback kind for removal");
-    }
-
-    if (this->countCallbacks() == 0) {
+    if (this->countCallbacks() == 0)
       this->defined = false;
-    }
   }
-
 
   void Callbacks::removeCallback(triton::callbacks::callback_e kind, ComparableFunctor<void(triton::Context&, const triton::arch::Register&, const triton::uint512& value)> cb) {
     switch (kind) {

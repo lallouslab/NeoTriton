@@ -5,8 +5,7 @@
 **  This program is under the terms of the Apache License 2.0.
 */
 
-#ifndef TRITON_SYMBOLICVARIABLE_H
-#define TRITON_SYMBOLICVARIABLE_H
+#pragma once
 
 #include <memory>
 #include <string>
@@ -15,125 +14,96 @@
 #include <triton/symbolicEnums.hpp>
 #include <triton/tritonTypes.hpp>
 
+namespace triton::engines::symbolic 
+{
+  class SymbolicVariable;
 
+  //! Shared Symbolic variable
+  using SharedSymbolicVariable = std::shared_ptr<triton::engines::symbolic::SymbolicVariable>;
 
-//! The Triton namespace
-namespace triton {
-/*!
- *  \addtogroup triton
- *  @{
- */
+  //! Weak Symbolic variable
+  using WeakSymbolicVariable = std::weak_ptr<triton::engines::symbolic::SymbolicVariable>;
 
-  //! The Engines namespace
-  namespace engines {
-  /*!
-   *  \ingroup triton
-   *  \addtogroup engines
-   *  @{
-   */
+  /*! \class SymbolicVariable
+      \brief The symbolic variable class. */
+  class SymbolicVariable 
+  {
+    protected:
+      //! The symbolic variable type assignment.
+      triton::engines::symbolic::variable_e type;
 
-    //! The Symbolic Execution namespace
-    namespace symbolic {
-    /*!
-     *  \ingroup engines
-     *  \addtogroup symbolic
-     *  @{
-     */
+      //! The alias of the symbolic variable.
+      std::string alias;
 
-      class SymbolicVariable;
+      //! The comment of the symbolic variable.
+      std::string comment;
 
-      //! Shared Symbolic variable
-      using SharedSymbolicVariable = std::shared_ptr<triton::engines::symbolic::SymbolicVariable>;
+      //! The name of the symbolic variable. Names are always something like this: SymVar_X. \sa TRITON_SYMVAR_NAME
+      std::string name;
 
-      //! Weak Symbolic variable
-      using WeakSymbolicVariable = std::weak_ptr<triton::engines::symbolic::SymbolicVariable>;
+      //! The id of the symbolic variable. This id is unique.
+      triton::usize id;
 
-      /*! \class SymbolicVariable
-          \brief The symbolic variable class. */
-      class SymbolicVariable {
-        protected:
-          //! The symbolic variable type assignment.
-          triton::engines::symbolic::variable_e type;
+      /*! \brief The origin of the symbolic variable.
+        *
+        * \details If the symbolic variable is a triton::engines::symbolic::REG, this value contains the register ID.
+        * Otherwise, if the symbolic variable is a triton::engines::symbolic::MEM, this value contains the address of the
+        * memory access.
+        */
+      triton::uint64 origin;
 
-          //! The alias of the symbolic variable.
-          std::string alias;
+      //! The size (in bits) of the symbolic variable.
+      triton::uint32 size;
 
-          //! The comment of the symbolic variable.
-          std::string comment;
+    public:
+      //! Constructor.
+      TRITON_EXPORT SymbolicVariable(
+        triton::engines::symbolic::variable_e type,
+        triton::uint64 origin,
+        triton::usize id,
+        triton::uint32 size,
+        const std::string& alias);
 
-          //! The name of the symbolic variable. Names are always something like this: SymVar_X. \sa TRITON_SYMVAR_NAME
-          std::string name;
+      //! Constructor by copy.
+      TRITON_EXPORT SymbolicVariable(const SymbolicVariable& other);
 
-          //! The id of the symbolic variable. This id is unique.
-          triton::usize id;
+      //! Operator.
+      TRITON_EXPORT SymbolicVariable& operator=(const SymbolicVariable& other);
 
-          /*! \brief The origin of the symbolic variable.
-           *
-           * \details If the symbolic varialbe is a triton::engines::symbolic::REG, this value contains the register ID.
-           * Otherwise, if the symbolic varialbe is a triton::engines::symbolic::MEM, this value contains the address of the
-           * memory access.
-           */
-          triton::uint64 origin;
+      //! Returns the symbolic variable type assignment.
+      TRITON_EXPORT triton::engines::symbolic::variable_e getType(void) const;
 
-          //! The size (in bits) of the symbolic variable.
-          triton::uint32 size;
+      //! Returns the alias of the symbolic variable.
+      TRITON_EXPORT const std::string& getAlias(void) const;
 
-        public:
-          //! Constructor.
-          TRITON_EXPORT SymbolicVariable(triton::engines::symbolic::variable_e type,
-                                         triton::uint64 origin,
-                                         triton::usize id,
-                                         triton::uint32 size,
-                                         const std::string& alias);
+      //! Returns the comment of the symbolic variable.
+      TRITON_EXPORT const std::string& getComment(void) const;
 
-          //! Constructor by copy.
-          TRITON_EXPORT SymbolicVariable(const SymbolicVariable& other);
+      //! Returns the name of the symbolic variable.
+      TRITON_EXPORT const std::string& getName(void) const;
 
-          //! Operator.
-          TRITON_EXPORT SymbolicVariable& operator=(const SymbolicVariable& other);
+      //! Returns the id of the symbolic variable. This id is unique.
+      TRITON_EXPORT triton::usize getId(void) const;
 
-          //! Returns the symbolic variable type assignment.
-          TRITON_EXPORT triton::engines::symbolic::variable_e getType(void) const;
+      //! Returns the source value of the symbolic variable.
+      TRITON_EXPORT triton::uint64 getOrigin(void) const;
 
-          //! Returns the alias of the symbolic variable.
-          TRITON_EXPORT const std::string& getAlias(void) const;
+      //! Returns the size (in bits) of the symbolic variable.
+      TRITON_EXPORT triton::uint32 getSize(void) const;
 
-          //! Returns the comment of the symbolic variable.
-          TRITON_EXPORT const std::string& getComment(void) const;
+      //! Sets the alias of the symbolic variable.
+      TRITON_EXPORT void setAlias(const std::string& alias);
 
-          //! Returns the name of the symbolic variable.
-          TRITON_EXPORT const std::string& getName(void) const;
-
-          //! Returns the id of the symbolic variable. This id is unique.
-          TRITON_EXPORT triton::usize getId(void) const;
-
-          //! Returns the source value of the symbolic variable.
-          TRITON_EXPORT triton::uint64 getOrigin(void) const;
-
-          //! Returns the size (in bits) of the symbolic variable.
-          TRITON_EXPORT triton::uint32 getSize(void) const;
-
-          //! Sets the alias of the symbolic variable.
-          TRITON_EXPORT void setAlias(const std::string& alias);
-
-          //! Sets the comment of the symbolic variable.
-          TRITON_EXPORT void setComment(const std::string& comment);
-      };
-
-      //! Displays a symbolic variable.
-      TRITON_EXPORT std::ostream& operator<<(std::ostream& stream, const SymbolicVariable& symVar);
-
-      //! Displays a symbolic variable.
-      TRITON_EXPORT std::ostream& operator<<(std::ostream& stream, const SymbolicVariable* symVar);
-
-      //! Compares two symbolic variables.
-      TRITON_EXPORT bool operator<(const SymbolicVariable& symvar1, const SymbolicVariable& symvar2);
-
-    /*! @} End of symbolic namespace */
-    };
-  /*! @} End of engines namespace */
+      //! Sets the comment of the symbolic variable.
+      TRITON_EXPORT void setComment(const std::string& comment);
   };
-/*! @} End of triton namespace */
-};
 
-#endif /* TRITON_SYMBOLICVARIABLE_H */
+  //! Displays a symbolic variable.
+  TRITON_EXPORT std::ostream& operator<<(std::ostream& stream, const SymbolicVariable& symVar);
+
+  //! Displays a symbolic variable.
+  TRITON_EXPORT std::ostream& operator<<(std::ostream& stream, const SymbolicVariable* symVar);
+
+  //! Compares two symbolic variables.
+  TRITON_EXPORT bool operator<(const SymbolicVariable& symvar1, const SymbolicVariable& symvar2);
+}

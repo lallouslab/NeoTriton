@@ -127,7 +127,9 @@ namespace triton
         TRITON_EXPORT Callbacks(triton::Context& ctx);
 
         //! Adds a GET_CONCRETE_MEMORY_VALUE callback.
-        TRITON_EXPORT void addCallback(triton::callbacks::callback_e kind, getConcreteMemoryValueCallback cb);
+        TRITON_EXPORT void addCallback(
+          triton::callbacks::callback_e kind, 
+          getConcreteMemoryValueCallback cb);
 
         //! Adds a GET_CONCRETE_REGISTER_VALUE callback.
         TRITON_EXPORT void addCallback(
@@ -159,7 +161,7 @@ namespace triton
         TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, getConcreteRegisterValueCallback cb);
 
         //! Deletes a SET_CONCRETE_MEMORY_VALUE callback.
-        TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, ComparableFunctor<void(triton::Context&, const triton::arch::MemoryAccess&, const triton::uint512& value)> cb);
+        TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, setConcreteMemoryValueCallback cb);
 
         //! Deletes a SET_CONCRETE_REGISTER_VALUE callback.
         TRITON_EXPORT void removeCallback(triton::callbacks::callback_e kind, ComparableFunctor<void(triton::Context&, const triton::arch::Register&, const triton::uint512& value)> cb);

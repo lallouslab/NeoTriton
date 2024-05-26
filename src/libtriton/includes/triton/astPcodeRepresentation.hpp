@@ -13,10 +13,9 @@
 #include <triton/ast.hpp>
 #include <triton/dllexport.hpp>
 
-//! The Representations namespace
 namespace triton::ast::representations 
 {
-  // Pseudo Code representation.
+  // Pseudo-code representation
   class AstPcodeRepresentation : public AstRepresentationInterface 
   {
     public:

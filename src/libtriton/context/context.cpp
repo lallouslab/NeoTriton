@@ -497,8 +497,8 @@ template TRITON_EXPORT void Context::addCallback(
   callbacks::symbolicSimplificationCallback cb);
 
 template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::MemoryAccess&)> cb);
-template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::Register&)> cb);
-template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::MemoryAccess&, const uint512& value)> cb);
+template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, callbacks::getConcreteRegisterValueCallback cb);
+template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, callbacks::setConcreteMemoryValueCallback cb);
 template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<void(Context&, const arch::Register&, const uint512& value)> cb);
 template TRITON_EXPORT void Context::removeCallback(callbacks::callback_e kind, ComparableFunctor<ast::SharedAbstractNode(Context&, const ast::SharedAbstractNode&)> cb);
 
@@ -506,25 +506,26 @@ void Context::clearCallbacks(void) {
   this->callbacks.clearCallbacks();
 }
 
-ast::SharedAbstractNode Context::processCallbacks(callbacks::callback_e kind, ast::SharedAbstractNode node) {
-  if (this->callbacks.isDefined()) {
+ast::SharedAbstractNode Context::processCallbacks(callbacks::callback_e kind, ast::SharedAbstractNode node) 
+{
+  if (this->callbacks.isDefined())
     return this->callbacks.processCallbacks(kind, node);
-  }
+
   return node;
 }
 
 
-void Context::processCallbacks(callbacks::callback_e kind, const arch::MemoryAccess& mem) {
-  if (this->callbacks.isDefined()) {
+void Context::processCallbacks(callbacks::callback_e kind, const arch::MemoryAccess& mem) 
+{
+  if (this->callbacks.isDefined())
     this->callbacks.processCallbacks(kind, mem);
-  }
 }
 
 
-void Context::processCallbacks(callbacks::callback_e kind, const arch::Register& reg) {
-  if (this->callbacks.isDefined()) {
+void Context::processCallbacks(callbacks::callback_e kind, const arch::Register& reg) 
+{
+  if (this->callbacks.isDefined())
     this->callbacks.processCallbacks(kind, reg);
-  }
 }
 
 
@@ -573,7 +574,8 @@ void Context::symbolizeMemory(uint64 addr, usize size) {
 }
 
 
-engines::symbolic::SharedSymbolicVariable Context::symbolizeRegister(const arch::Register& reg, const std::string& symVarAlias) {
+engines::symbolic::SharedSymbolicVariable Context::symbolizeRegister(const arch::Register& reg, const std::string& symVarAlias) 
+{
   this->checkSymbolic();
   return this->symbolic->symbolizeRegister(reg, symVarAlias);
 }

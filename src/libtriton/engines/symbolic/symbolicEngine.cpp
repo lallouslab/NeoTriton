@@ -14,11 +14,8 @@
 #include <triton/symbolicEngine.hpp>
 #include <triton/astContext.hpp>
 
-
-
-namespace triton::engines::symbolic 
+namespace triton::engines::symbolic
 {
-
   SymbolicEngine::SymbolicEngine(triton::arch::Architecture* architecture,
                                   const triton::modes::SharedModes& modes,
                                   const triton::ast::SharedAstContext& astCtxt,
@@ -26,11 +23,11 @@ namespace triton::engines::symbolic
     : triton::engines::symbolic::SymbolicSimplification(architecture, callbacks),
       triton::engines::symbolic::PathManager(modes, astCtxt),
       astCtxt(astCtxt),
-      modes(modes) {
+      modes(modes) 
+  {
 
-    if (architecture == nullptr) {
+    if (architecture == nullptr)
       throw triton::exceptions::SymbolicEngine("SymbolicEngine::SymbolicEngine(): The architecture pointer must be valid.");
-    }
 
     this->architecture      = architecture;
     this->callbacks         = callbacks;
@@ -42,13 +39,12 @@ namespace triton::engines::symbolic
     this->symbolicReg.resize(this->numberOfRegisters);
   }
 
-
   SymbolicEngine::SymbolicEngine(const SymbolicEngine& other)
     : triton::engines::symbolic::SymbolicSimplification(other),
       triton::engines::symbolic::PathManager(other),
       astCtxt(other.astCtxt),
-      modes(other.modes) {
-
+      modes(other.modes) 
+  {
     this->alignedBitvectorMemory = other.alignedBitvectorMemory;
     this->architecture           = other.architecture;
     this->callbacks              = other.callbacks;
@@ -62,8 +58,8 @@ namespace triton::engines::symbolic
     this->uniqueSymVarId         = other.uniqueSymVarId;
   }
 
-
-  SymbolicEngine::~SymbolicEngine() {
+  SymbolicEngine::~SymbolicEngine() 
+  {
     /* See #828: Release ownership before calling container destructor */
     this->memoryBitvector.clear();
     this->symbolicReg.clear();
@@ -71,7 +67,7 @@ namespace triton::engines::symbolic
   }
 
 
-  SymbolicEngine& SymbolicEngine::operator=(const SymbolicEngine& other) 
+  SymbolicEngine& SymbolicEngine::operator=(const SymbolicEngine& other)
   {
     triton::engines::symbolic::SymbolicSimplification::operator=(other);
     triton::engines::symbolic::PathManager::operator=(other);
@@ -151,7 +147,7 @@ namespace triton::engines::symbolic
 
 
   /* Same as concretizeMemory but with all address memory */
-  void SymbolicEngine::concretizeAllMemory(void) 
+  void SymbolicEngine::concretizeAllMemory(void)
   {
     this->memoryArray = nullptr;          /* abv logic */
     this->memoryBitvector.clear();        /* bv logic  */
@@ -174,7 +170,7 @@ namespace triton::engines::symbolic
 
 
   /* Adds an aligned memory */
-  void SymbolicEngine::addAlignedMemory(triton::uint64 address, triton::uint32 size, const SharedSymbolicExpression& expr) 
+  void SymbolicEngine::addAlignedMemory(triton::uint64 address, triton::uint32 size, const SharedSymbolicExpression& expr)
   {
     this->removeAlignedMemory(address, size);
     if (!(this->modes->isModeEnabled(triton::modes::ONLY_ON_SYMBOLIZED) && expr->getAst()->isSymbolized() == false)) {
@@ -183,7 +179,7 @@ namespace triton::engines::symbolic
   }
 
   /* Removes an aligned memory */
-  void SymbolicEngine::removeAlignedMemory(triton::uint64 address, triton::uint32 size) 
+  void SymbolicEngine::removeAlignedMemory(triton::uint64 address, triton::uint32 size)
   {
     /*
       * Avoid accessing the alignedBitvectorMemory array when empty. This usually happens when
@@ -199,7 +195,7 @@ namespace triton::engines::symbolic
       return;
 
     /* Remove overloaded positive ranges */
-    for (triton::uint32 index = 0; index < size; index++) 
+    for (triton::uint32 index = 0; index < size; index++)
     {
       this->alignedBitvectorMemory.erase(std::make_pair(address+index, triton::size::byte));
       this->alignedBitvectorMemory.erase(std::make_pair(address+index, triton::size::word));
@@ -212,7 +208,7 @@ namespace triton::engines::symbolic
     }
 
     /* Remove overloaded negative ranges */
-    for (triton::uint32 index = 1; index < triton::size::dqqword; index++) 
+    for (triton::uint32 index = 1; index < triton::size::dqqword; index++)
     {
       if (index < triton::size::word)    this->alignedBitvectorMemory.erase(std::make_pair(address-index, triton::size::word));
       if (index < triton::size::dword)   this->alignedBitvectorMemory.erase(std::make_pair(address-index, triton::size::dword));
@@ -225,7 +221,7 @@ namespace triton::engines::symbolic
   }
 
   /* Returns the reference memory if it's referenced otherwise returns nullptr */
-  SharedSymbolicExpression SymbolicEngine::getSymbolicMemory(triton::uint64 addr) const 
+  SharedSymbolicExpression SymbolicEngine::getSymbolicMemory(triton::uint64 addr) const
   {
     auto it = this->memoryBitvector.find(addr);
     if (it != this->memoryBitvector.end())
@@ -559,7 +555,8 @@ namespace triton::engines::symbolic
     * symbolizeExpression(43, 8)
     * #43 = SymVar_4
     */
-  SharedSymbolicVariable SymbolicEngine::symbolizeExpression(triton::usize exprId, triton::uint32 symVarSize, const std::string& symVarAlias) {
+  SharedSymbolicVariable SymbolicEngine::symbolizeExpression(triton::usize exprId, triton::uint32 symVarSize, const std::string& symVarAlias) 
+  {
     const SharedSymbolicExpression& expression = this->getSymbolicExpression(exprId);
     const SharedSymbolicVariable& symVar       = this->newSymbolicVariable(UNDEFINED_VARIABLE, 0, symVarSize, symVarAlias);
     const triton::ast::SharedAbstractNode& tmp = this->astCtxt->variable(symVar);
@@ -573,17 +570,17 @@ namespace triton::engines::symbolic
     return symVar;
   }
 
-
   /* Symbolize a memory area to 8-bits symbolic variables */
-  void SymbolicEngine::symbolizeMemory(triton::uint64 addr, triton::usize size) {
-    for (triton::usize i = 0; i != size; i++) {
+  void SymbolicEngine::symbolizeMemory(triton::uint64 addr, triton::usize size) 
+  {
+    for (triton::usize i = 0; i != size; i++) 
       this->symbolizeMemory(triton::arch::MemoryAccess(addr + i, triton::size::byte));
-    }
   }
 
 
   /* The memory size is used to define the symbolic variable's size. */
-  SharedSymbolicVariable SymbolicEngine::symbolizeMemory(const triton::arch::MemoryAccess& mem, const std::string& symVarAlias) {
+  SharedSymbolicVariable SymbolicEngine::symbolizeMemory(const triton::arch::MemoryAccess& mem, const std::string& symVarAlias) 
+  {
     triton::uint64 memAddr    = mem.getAddress();
     triton::uint32 symVarSize = mem.getSize();
     triton::uint512 cv        = this->architecture->getConcreteMemoryValue(mem);
@@ -620,8 +617,9 @@ namespace triton::engines::symbolic
         this->memoryArray->setOriginMemory(triton::arch::MemoryAccess(memAddr + index, triton::size::byte));
         this->addBitvectorMemory(memAddr + index, this->memoryArray);
       }
-      /* Symbolic bitvector */
-      else {
+      // Symbolic bitvector
+      else
+      {
         const SharedSymbolicExpression& se = this->newSymbolicExpression(tmp, MEMORY_EXPRESSION, "Byte reference");
         se->setOriginMemory(triton::arch::MemoryAccess(memAddr + index, triton::size::byte));
         this->addBitvectorMemory(memAddr + index, se);
@@ -631,8 +629,8 @@ namespace triton::engines::symbolic
     return symVar;
   }
 
-
-  SharedSymbolicVariable SymbolicEngine::symbolizeRegister(const triton::arch::Register& reg, const std::string& symVarAlias) {
+  SharedSymbolicVariable SymbolicEngine::symbolizeRegister(const triton::arch::Register& reg, const std::string& symVarAlias)
+  {
     const triton::arch::Register& parent  = this->architecture->getRegister(reg.getParent());
     triton::uint32 symVarSize             = reg.getBitSize();
     triton::uint512 cv                    = this->architecture->getConcreteRegisterValue(reg);
@@ -640,7 +638,7 @@ namespace triton::engines::symbolic
     if (!this->architecture->isRegisterValid(parent.getId()))
       throw triton::exceptions::SymbolicEngine("SymbolicEngine::symbolizeRegister(): Invalid register id");
 
-    if (reg.isMutable() == false)
+    if (!reg.isMutable())
       throw triton::exceptions::SymbolicEngine("SymbolicEngine::symbolizeRegister(): This register is immutable");
 
     /* Create the symbolic variable */
@@ -1248,9 +1246,9 @@ namespace triton::engines::symbolic
 
 
   /* Initializes the memory access AST (LOAD and STORE) */
-  void SymbolicEngine::initLeaAst(triton::arch::MemoryAccess& mem, bool force) 
+  void SymbolicEngine::initLeaAst(triton::arch::MemoryAccess& mem, bool force)
   {
-    if (mem.getBitSize() >= bitsize::byte) 
+    if (mem.getBitSize() >= bitsize::byte)
     {
       const triton::arch::Register& base  = mem.getConstBaseRegister();
       const triton::arch::Register& index = mem.getConstIndexRegister();
@@ -1302,7 +1300,7 @@ namespace triton::engines::symbolic
     return this->astCtxt->getVariableValue(symVar->getName());
   }
 
-  void SymbolicEngine::setConcreteVariableValue(const SharedSymbolicVariable& symVar, const triton::uint512& value) 
+  void SymbolicEngine::setConcreteVariableValue(const SharedSymbolicVariable& symVar, const triton::uint512& value)
   {
     triton::uint512 max = -1;
 
@@ -1330,7 +1328,7 @@ namespace triton::engines::symbolic
     }
   }
 
-  inline bool SymbolicEngine::isAlignedMode(void) const 
+  inline bool SymbolicEngine::isAlignedMode(void) const
   {
     return this->modes->isModeEnabled(triton::modes::ALIGNED_MEMORY);
   }

@@ -29,7 +29,6 @@ namespace triton::engines::symbolic
   using SharedSymbolicVariable = std::shared_ptr<triton::engines::symbolic::SymbolicVariable>;
 };
 
-//! The AST namespace
 namespace triton::ast 
 {
   //! \class AstContext
@@ -207,18 +206,17 @@ namespace triton::ast
           throw triton::exceptions::Ast("Node builders - Not enough memory");
         node->init();
 
-        if (this->modes->isModeEnabled(triton::modes::CONSTANT_FOLDING)) {
-          if (node->isSymbolized() == false) {
+        if (this->modes->isModeEnabled(triton::modes::CONSTANT_FOLDING)) 
+        {
+          if (!node->isSymbolized())
             return this->bv(node->evaluate(), node->getBitvectorSize());
-          }
         }
 
         if (this->modes->isModeEnabled(triton::modes::AST_OPTIMIZATIONS)) {
           /* Optimization: concatenate extractions in one if possible */
           auto n = this->simplify_concat(std::vector<SharedAbstractNode>(exprs.begin(), exprs.end()));
-          if (n) {
+          if (n)
             return n;
-          }
         }
 
         return this->collect(node);
