@@ -138,7 +138,6 @@ namespace triton::arch
     return this->opcode;
   }
 
-
   void Instruction::setOpcode(const void* opcode, triton::uint32 size) {
     if (size > sizeof(this->opcode))
       throw triton::exceptions::Instruction("Instruction::setOpcode(): Invalid size (too big).");
@@ -494,38 +493,8 @@ namespace triton::arch
     return true;
   }
 
-
-  bool Instruction::isWriteBack(void) const {
-    return this->writeBack;
-  }
-
-
-  bool Instruction::isUpdateFlag(void) const {
-    return this->updateFlag;
-  }
-
-
-  bool Instruction::isThumb(void) const {
-    return this->thumb;
-  }
-
-
-  void Instruction::setBranch(bool flag) {
-    this->branch = flag;
-  }
-
-
-  void Instruction::setControlFlow(bool flag) {
-    this->controlFlow = flag;
-  }
-
-
-  void Instruction::setConditionTaken(bool flag) {
-    this->conditionTaken = flag;
-  }
-
-
-  void Instruction::clear(void) {
+  void Instruction::clear(void) 
+  {
     this->address         = 0;
     this->branch          = false;
     this->codeCondition   = triton::arch::arm::ID_CONDITION_INVALID;

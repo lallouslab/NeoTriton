@@ -191,7 +191,9 @@ namespace triton::arch
       TRITON_EXPORT triton::uint32 getSize(void) const;
 
       //! Sets a load access.
-      TRITON_EXPORT void setLoadAccess(const triton::arch::MemoryAccess& mem, const triton::ast::SharedAbstractNode& node);
+      TRITON_EXPORT void setLoadAccess(
+        const triton::arch::MemoryAccess& mem, 
+        const triton::ast::SharedAbstractNode& node);
 
       //! Removes a load access.
       TRITON_EXPORT void removeLoadAccess(const triton::arch::MemoryAccess& mem);
@@ -293,22 +295,34 @@ namespace triton::arch
       TRITON_EXPORT bool isPrefixed(void) const;
 
       //! Returns true if the instruction performs a write back. Mainly used for AArch64 instructions like LDR.
-      TRITON_EXPORT bool isWriteBack(void) const;
+      TRITON_EXPORT bool isWriteBack(void) const {
+        return this->writeBack;
+      }
 
       //! Returns true if the instruction updates flags. Mainly used for AArch64 instructions like ADDS.
-      TRITON_EXPORT bool isUpdateFlag(void) const;
+      TRITON_EXPORT bool isUpdateFlag(void) const {
+        return this->updateFlag;
+      }
 
       //! Returns true if it is a Thumb instruction.
-      TRITON_EXPORT bool isThumb(void) const;
+      TRITON_EXPORT bool isThumb(void) const {
+        return this->thumb;
+      }
 
       //! Sets flag to define this instruction as branch or not.
-      TRITON_EXPORT void setBranch(bool flag);
+      TRITON_EXPORT void setBranch(bool flag) {
+        this->branch = flag;
+      }
 
       //! Sets flag to define this instruction changes the control flow or not.
-      TRITON_EXPORT void setControlFlow(bool flag);
+      TRITON_EXPORT void setControlFlow(bool flag) {
+        this->controlFlow = flag;
+      }
 
       //! Sets flag to define if the condition is taken or not.
-      TRITON_EXPORT void setConditionTaken(bool flag);
+      TRITON_EXPORT void setConditionTaken(bool flag) {
+        this->conditionTaken = flag;
+      }
 
       //! Clears all instruction information.
       TRITON_EXPORT void clear(void);

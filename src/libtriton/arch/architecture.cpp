@@ -17,8 +17,6 @@
 #include <triton/x86Cpu.hpp>
 #include <triton/x86Specifications.hpp>
 
-
-
 namespace triton::arch 
 {
   Architecture::Architecture(triton::callbacks::Callbacks* callbacks) 
@@ -49,7 +47,8 @@ namespace triton::arch
   void Architecture::setArchitecture(triton::arch::architecture_e arch) 
   {
     /* Allocate and init the good arch */
-    switch (arch) {
+    switch (arch) 
+    {
       case triton::arch::ARCH_X86_64:  
         this->cpu.reset(new(std::nothrow) triton::arch::x86::x8664Cpu(this->callbacks));            
         break;
@@ -95,7 +94,6 @@ namespace triton::arch
   bool Architecture::isFlag(const triton::arch::Register& reg) const {
     return this->isFlag(reg.getId());
   }
-
 
   bool Architecture::isRegister(triton::arch::register_e regId) const {
     if (!this->cpu)
@@ -232,13 +230,12 @@ namespace triton::arch
     return this->cpu->getParentRegister(id);
   }
 
-
-  void Architecture::disassembly(triton::arch::Instruction& inst) const {
+  void Architecture::disassembly(triton::arch::Instruction& inst) const 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::disassembly(): You must define an architecture.");
     this->cpu->disassembly(inst);
   }
-
 
   void Architecture::disassembly(triton::arch::BasicBlock& block, triton::uint64 addr) const 
   {
@@ -253,15 +250,16 @@ namespace triton::arch
     }
   }
 
-
-  std::vector<triton::arch::Instruction> Architecture::disassembly(triton::uint64 addr, triton::usize count) const {
+  std::vector<triton::arch::Instruction> Architecture::disassembly(triton::uint64 addr, triton::usize count) const 
+  {
     std::vector<triton::arch::Instruction> ret;
     ret.reserve(count);
 
-    while (count--) {
-      if (!this->isConcreteMemoryValueDefined(addr)) {
+    while (count--) 
+    {
+      if (!this->isConcreteMemoryValueDefined(addr))
         break;
-      }
+
       auto opcodes = this->getConcreteMemoryAreaValue(addr, 16);
       auto inst = triton::arch::Instruction(addr, reinterpret_cast<triton::uint8*>(opcodes.data()), opcodes.size());
       this->disassembly(inst);
@@ -310,15 +308,14 @@ namespace triton::arch
     return this->cpu->getConcreteMemoryValue(mem, execCallbacks);
   }
 
-
   triton::bytes Architecture::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::getConcreteMemoryAreaValue(): You must define an architecture.");
     return this->cpu->getConcreteMemoryAreaValue(baseAddr, size, execCallbacks);
   }
 
-
-  triton::uint512 Architecture::getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks) const {
+  triton::uint512 Architecture::getConcreteRegisterValue(const triton::arch::Register& reg, bool execCallbacks) const 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::getConcreteRegisterValue(): You must define an architecture.");
     return this->cpu->getConcreteRegisterValue(reg, execCallbacks);
@@ -331,48 +328,47 @@ namespace triton::arch
     this->cpu->setConcreteMemoryValue(addr, value, execCallbacks);
   }
 
-
-  void Architecture::setConcreteMemoryValue(const triton::arch::MemoryAccess& mem, const triton::uint512& value, bool execCallbacks) {
+  void Architecture::setConcreteMemoryValue(const triton::arch::MemoryAccess& mem, const triton::uint512& value, bool execCallbacks) 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::setConcreteMemoryValue(): You must define an architecture.");
     this->cpu->setConcreteMemoryValue(mem, value, execCallbacks);
   }
 
-
-  void Architecture::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks) {
+  void Architecture::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks) 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::setConcreteMemoryAreaValue(): You must define an architecture.");
     this->cpu->setConcreteMemoryAreaValue(baseAddr, values, execCallbacks);
   }
 
-
-  void Architecture::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const void* area, triton::usize size, bool execCallbacks) {
+  void Architecture::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const void* area, triton::usize size, bool execCallbacks) 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::setConcreteMemoryAreaValue(): You must define an architecture.");
     this->cpu->setConcreteMemoryAreaValue(baseAddr, area, size, execCallbacks);
   }
 
-
-  void Architecture::setConcreteRegisterValue(const triton::arch::Register& reg, const triton::uint512& value, bool execCallbacks) {
+  void Architecture::setConcreteRegisterValue(const triton::arch::Register& reg, const triton::uint512& value, bool execCallbacks) 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::setConcreteRegisterValue(): You must define an architecture.");
     this->cpu->setConcreteRegisterValue(reg, value, execCallbacks);
   }
 
-
-  bool Architecture::isConcreteMemoryValueDefined(const triton::arch::MemoryAccess& mem) const {
+  bool Architecture::isConcreteMemoryValueDefined(const triton::arch::MemoryAccess& mem) const 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::isConcreteMemoryValueDefined(): You must define an architecture.");
     return this->cpu->isConcreteMemoryValueDefined(mem);
   }
 
-
-  bool Architecture::isConcreteMemoryValueDefined(triton::uint64 baseAddr, triton::usize size) const {
+  bool Architecture::isConcreteMemoryValueDefined(triton::uint64 baseAddr, triton::usize size) const 
+  {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::isConcreteMemoryValueDefined(): You must define an architecture.");
     return this->cpu->isConcreteMemoryValueDefined(baseAddr, size);
   }
-
 
   void Architecture::clearConcreteMemoryValue(const triton::arch::MemoryAccess& mem) {
     if (!this->cpu)
@@ -380,24 +376,24 @@ namespace triton::arch
     this->cpu->clearConcreteMemoryValue(mem);
   }
 
-
   void Architecture::clearConcreteMemoryValue(triton::uint64 baseAddr, triton::usize size) {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::clearConcreteMemoryValue(): You must define an architecture.");
     this->cpu->clearConcreteMemoryValue(baseAddr, size);
   }
 
-
   const triton::arch::Instruction Architecture::getNopInstruction(void) const 
   {
     if (!this->cpu)
       throw triton::exceptions::Architecture("Architecture::getNopInstruction(): You must define an architecture.");
 
-    switch (this->getArchitecture()) {
+    switch (this->getArchitecture()) 
+    {
       case triton::arch::ARCH_AARCH64:
         return triton::arch::arm::aarch64::nop;
 
-      case triton::arch::ARCH_ARM32: {
+      case triton::arch::ARCH_ARM32: 
+        {
         if (this->isThumb())
           return triton::arch::arm::arm32::thumbnop;
         else
