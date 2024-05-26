@@ -38,9 +38,22 @@ namespace triton::arch
     this->architecture         = architecture;
     this->symbolicEngine       = symbolicEngine;
     this->taintEngine          = taintEngine;
-    this->aarch64Isa           = new(std::nothrow) triton::arch::arm::aarch64::AArch64Semantics(architecture, symbolicEngine, taintEngine, astCtxt);
-    this->arm32Isa             = new(std::nothrow) triton::arch::arm::arm32::Arm32Semantics(architecture, symbolicEngine, taintEngine, astCtxt);
-    this->x86Isa               = new(std::nothrow) triton::arch::x86::x86Semantics(architecture, symbolicEngine, taintEngine, modes, astCtxt);
+    this->aarch64Isa = new(std::nothrow) triton::arch::arm::aarch64::AArch64Semantics(
+      architecture, 
+      symbolicEngine, 
+      taintEngine, 
+      astCtxt);
+    this->arm32Isa = new(std::nothrow) triton::arch::arm::arm32::Arm32Semantics(
+      architecture, 
+      symbolicEngine, 
+      taintEngine, 
+      astCtxt);
+    this->x86Isa = new(std::nothrow) triton::arch::x86::x86Semantics(
+      architecture, 
+      symbolicEngine, 
+      taintEngine, 
+      modes, 
+      astCtxt);
 
     if (this->x86Isa == nullptr || this->aarch64Isa == nullptr || this->arm32Isa == nullptr)
       throw triton::exceptions::IrBuilder("IrBuilder::IrBuilder(): Not enough memory.");
@@ -119,7 +132,8 @@ namespace triton::arch
   }
 
 
-  void IrBuilder::preIrInit(triton::arch::Instruction& inst) {
+  void IrBuilder::preIrInit(triton::arch::Instruction& inst) 
+  {
     /* Clear previous expressions if exist */
     inst.symbolicExpressions.clear();
 
@@ -131,13 +145,12 @@ namespace triton::arch
     inst.getWrittenRegisters().clear();
 
     /* Update instruction address if undefined */
-    if (!inst.getAddress()) {
+    if (!inst.getAddress())
       inst.setAddress(static_cast<triton::uint64>(this->architecture->getConcreteRegisterValue(this->architecture->getProgramCounter())));
-    }
   }
 
-
-  void IrBuilder::postIrInit(triton::arch::Instruction& inst) {
+  void IrBuilder::postIrInit(triton::arch::Instruction& inst)
+  {
     std::vector<triton::engines::symbolic::SharedSymbolicExpression> newVector;
 
     /* Set the taint */
@@ -148,7 +161,8 @@ namespace triton::arch
       * execution only on symbolized expressions, we delete all
       * concrete expressions and their AST nodes.
       */
-    if (this->modes->isModeEnabled(triton::modes::ONLY_ON_SYMBOLIZED)) {
+    if (this->modes->isModeEnabled(triton::modes::ONLY_ON_SYMBOLIZED)) 
+    {
       /* Clear memory operands */
       this->collectUnsymbolizedNodes(inst.operands);
 
@@ -168,10 +182,10 @@ namespace triton::arch
       this->collectUnsymbolizedNodes(inst.getWrittenRegisters());
 
       /* Clear symbolic expressions */
-      for (const auto& se : inst.symbolicExpressions) {
-        if (se->isSymbolized() == false) {
+      for (const auto& se : inst.symbolicExpressions) 
+      {
+        if (se->isSymbolized() == false)
           this->symbolicEngine->removeSymbolicExpression(se);
-        }
         else
           newVector.push_back(se);
       }
@@ -183,7 +197,8 @@ namespace triton::arch
       * execution only on tainted instructions, we delete all
       * expressions untainted and their AST nodes.
       */
-    else if (this->modes->isModeEnabled(triton::modes::ONLY_ON_TAINTED) && !inst.isTainted()) {
+    else if (this->modes->isModeEnabled(triton::modes::ONLY_ON_TAINTED) && !inst.isTainted()) 
+    {
       /* Memory operands */
       this->collectNodes(inst.operands);
 
@@ -210,10 +225,11 @@ namespace triton::arch
   }
 
 
-  void IrBuilder::removeSymbolicExpressions(triton::arch::Instruction& inst) {
-    for (const auto& se : inst.symbolicExpressions) {
+  void IrBuilder::removeSymbolicExpressions(triton::arch::Instruction& inst) 
+  {
+    for (const auto& se : inst.symbolicExpressions)
       this->symbolicEngine->removeSymbolicExpression(se);
-    }
+
     inst.symbolicExpressions.clear();
   }
 

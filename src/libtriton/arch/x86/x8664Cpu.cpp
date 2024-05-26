@@ -656,7 +656,6 @@ namespace triton::arch::x86
     return ret;
   }
 
-
   triton::bytes x8664Cpu::getConcreteMemoryAreaValue(triton::uint64 baseAddr, triton::usize size, bool execCallbacks) const {
     triton::bytes area;
 

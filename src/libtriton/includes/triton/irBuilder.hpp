@@ -5,8 +5,7 @@
 **  This program is under the terms of the Apache License 2.0.
 */
 
-#ifndef TRITON_IRBUILDER_H
-#define TRITON_IRBUILDER_H
+#pragma once
 
 #include <triton/archEnums.hpp>
 #include <triton/architecture.hpp>
@@ -19,93 +18,74 @@
 #include <triton/taintEngine.hpp>
 
 
+namespace triton::arch 
+{
+  /*! \class IrBuilder
+    *  \brief The IR builder. */
+  class IrBuilder 
+  {
+    private:
+      //! Architecture API
+      triton::arch::Architecture* architecture;
 
-//! The Triton namespace
-namespace triton {
-/*!
- *  \addtogroup triton
- *  @{
- */
+      //! Modes API
+      triton::modes::SharedModes modes;
 
-  //! The Architecture namespace
-  namespace arch {
-  /*!
-   *  \ingroup triton
-   *  \addtogroup arch
-   *  @{
-   */
+      //! AstContext API
+      triton::ast::SharedAstContext astCtxt;
 
-    /*! \class IrBuilder
-     *  \brief The IR builder. */
-    class IrBuilder {
-      private:
-        //! Architecture API
-        triton::arch::Architecture* architecture;
+      //! Symbolic engine API
+      triton::engines::symbolic::SymbolicEngine* symbolicEngine;
 
-        //! Modes API
-        triton::modes::SharedModes modes;
+      //! Taint engine API
+      triton::engines::taint::TaintEngine* taintEngine;
 
-        //! AstContext API
-        triton::ast::SharedAstContext astCtxt;
+      //! Removes all symbolic expressions of an instruction.
+      void removeSymbolicExpressions(triton::arch::Instruction& inst);
 
-        //! Symbolic engine API
-        triton::engines::symbolic::SymbolicEngine* symbolicEngine;
+      //! Collects nodes from a set.
+      template <typename T> void collectNodes(T& items) const;
 
-        //! Taint engine API
-        triton::engines::taint::TaintEngine* taintEngine;
+      //! Collects nodes from operands.
+      void collectNodes(std::vector<triton::arch::OperandWrapper>& operands) const;
 
-        //! Removes all symbolic expressions of an instruction.
-        void removeSymbolicExpressions(triton::arch::Instruction& inst);
+      //! Collects unsymbolized nodes from a set.
+      template <typename T> void collectUnsymbolizedNodes(T& items) const;
 
-        //! Collects nodes from a set.
-        template <typename T> void collectNodes(T& items) const;
+      //! Collects unsymbolized nodes from operands.
+      void collectUnsymbolizedNodes(std::vector<triton::arch::OperandWrapper>& operands) const;
 
-        //! Collects nodes from operands.
-        void collectNodes(std::vector<triton::arch::OperandWrapper>& operands) const;
+    protected:
+      //! AArch64 ISA builder.
+      triton::arch::SemanticsInterface* aarch64Isa;
 
-        //! Collects unsymbolized nodes from a set.
-        template <typename T> void collectUnsymbolizedNodes(T& items) const;
+      //! ARM32 ISA builder.
+      triton::arch::SemanticsInterface* arm32Isa;
 
-        //! Collects unsymbolized nodes from operands.
-        void collectUnsymbolizedNodes(std::vector<triton::arch::OperandWrapper>& operands) const;
+      //! x86 ISA builder.
+      triton::arch::SemanticsInterface* x86Isa;
 
-      protected:
-        //! AArch64 ISA builder.
-        triton::arch::SemanticsInterface* aarch64Isa;
+    public:
+      //! Constructor.
+      TRITON_EXPORT IrBuilder(triton::arch::Architecture* architecture,
+                              const triton::modes::SharedModes& modes,
+                              const triton::ast::SharedAstContext& astCtxt,
+                              triton::engines::symbolic::SymbolicEngine* symbolicEngine,
+                              triton::engines::taint::TaintEngine* taintEngine);
 
-        //! ARM32 ISA builder.
-        triton::arch::SemanticsInterface* arm32Isa;
+      //! Destructor.
+      TRITON_EXPORT virtual ~IrBuilder();
 
-        //! x86 ISA builder.
-        triton::arch::SemanticsInterface* x86Isa;
+      //! Builds the semantics of the instruction. Returns `triton::arch::NO_FAULT` if succeed.
+      TRITON_EXPORT triton::arch::exception_e buildSemantics(triton::arch::Instruction& inst);
 
-      public:
-        //! Constructor.
-        TRITON_EXPORT IrBuilder(triton::arch::Architecture* architecture,
-                                const triton::modes::SharedModes& modes,
-                                const triton::ast::SharedAstContext& astCtxt,
-                                triton::engines::symbolic::SymbolicEngine* symbolicEngine,
-                                triton::engines::taint::TaintEngine* taintEngine);
+      //! Builds the semantics of instructions in a block. Returns `triton::arch::NO_FAULT` if succeed.
+      TRITON_EXPORT triton::arch::exception_e buildSemantics(triton::arch::BasicBlock& block);
 
-        //! Destructor.
-        TRITON_EXPORT virtual ~IrBuilder();
+      //! Everything which must be done before building the semantics
+      TRITON_EXPORT void preIrInit(triton::arch::Instruction& inst);
 
-        //! Builds the semantics of the instruction. Returns `triton::arch::NO_FAULT` if succeed.
-        TRITON_EXPORT triton::arch::exception_e buildSemantics(triton::arch::Instruction& inst);
-
-        //! Builds the semantics of instructions in a block. Returns `triton::arch::NO_FAULT` if succeed.
-        TRITON_EXPORT triton::arch::exception_e buildSemantics(triton::arch::BasicBlock& block);
-
-        //! Everything which must be done before buiding the semantics
-        TRITON_EXPORT void preIrInit(triton::arch::Instruction& inst);
-
-        //! Everything which must be done after building the semantics.
-        TRITON_EXPORT void postIrInit(triton::arch::Instruction& inst);
-    };
-
-  /*! @} End of arch namespace */
+      //! Everything which must be done after building the semantics.
+      TRITON_EXPORT void postIrInit(triton::arch::Instruction& inst);
   };
-/*! @} End of triton namespace */
-};
-
-#endif /* TRITON_IRBUILDER_H */
+}
