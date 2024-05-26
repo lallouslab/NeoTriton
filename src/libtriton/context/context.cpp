@@ -371,7 +371,8 @@ arch::BasicBlock Context::disassembly(uint64 addr) const {
 
 /* Processing Context ================================================================================ */
 
-void Context::initEngines(void) {
+void Context::initEngines(void) 
+{
   this->checkArchitecture();
 
   this->symbolic = new(std::nothrow) engines::symbolic::SymbolicEngine(&this->arch, this->modes, this->astCtxt, &this->callbacks);
@@ -1229,7 +1230,11 @@ std::ostream& Context::liftToLLVM(std::ostream& stream, const engines::symbolic:
 }
 
 
-std::ostream& Context::liftToPython(std::ostream& stream, const engines::symbolic::SharedSymbolicExpression& expr, bool icomment) {
+std::ostream& Context::liftToPython(
+  std::ostream& stream, 
+  const engines::symbolic::SharedSymbolicExpression& expr, 
+  bool icomment) 
+{
   this->checkLifting();
   return this->lifting->liftToPython(stream, expr, icomment);
 }
@@ -1240,12 +1245,18 @@ std::ostream& Context::liftToSMT(std::ostream& stream, const engines::symbolic::
   return this->lifting->liftToSMT(stream, expr, assert_, icomment);
 }
 
-std::ostream& Context::liftToDot(std::ostream& stream, const ast::SharedAbstractNode& node) {
+std::ostream& Context::liftToDot(
+  std::ostream& stream, 
+  const ast::SharedAbstractNode& node) 
+{
   this->checkLifting();
   return this->lifting->liftToDot(stream, node);
 }
 
-std::ostream& Context::liftToDot(std::ostream& stream, const engines::symbolic::SharedSymbolicExpression& expr) {
+std::ostream& Context::liftToDot(
+  std::ostream& stream, 
+  const engines::symbolic::SharedSymbolicExpression& expr) 
+{
   this->checkLifting();
   return this->lifting->liftToDot(stream, expr);
 }

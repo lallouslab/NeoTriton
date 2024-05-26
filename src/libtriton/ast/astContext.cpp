@@ -1025,34 +1025,35 @@ namespace triton::ast
     return this->collect(node);
   }
 
-
-  SharedAbstractNode AstContext::variable(const triton::engines::symbolic::SharedSymbolicVariable& symVar) {
+  SharedAbstractNode AstContext::variable(const triton::engines::symbolic::SharedSymbolicVariable& symVar) 
+  {
     // try to get node from variable pool
     auto it = this->valueMapping.find(symVar->getName());
-    if (it != this->valueMapping.end()) {
-      if (auto node = it->second.first.lock()) {
-        if (node->getBitvectorSize() != symVar->getSize()) {
+    if (it != this->valueMapping.end()) 
+    {
+      if (auto node = it->second.first.lock()) 
+      {
+        if (node->getBitvectorSize() != symVar->getSize())
           throw triton::exceptions::Ast("AstContext::variable(): Missmatching variable size.");
-        }
+
         // This node already exist, just return it
         return node;
       }
       throw triton::exceptions::Ast("AstContext::variable(): This symbolic variable is dead.");
     }
-    else {
-      // if not found, create a new variable node
-      SharedAbstractNode node = std::make_shared<VariableNode>(symVar, this->shared_from_this());
-      this->initVariable(symVar->getName(), 0, node);
-      if (node == nullptr) {
-        throw triton::exceptions::Ast("AstContext::variable(): Not enough memory");
-      }
-      node->init();
-      return this->collect(node);
-    }
+
+    // if not found, create a new variable node
+    SharedAbstractNode node = std::make_shared<VariableNode>(symVar, this->shared_from_this());
+    this->initVariable(symVar->getName(), 0, node);
+    if (node == nullptr)
+      throw triton::exceptions::Ast("AstContext::variable(): Not enough memory");
+
+    node->init();
+    return this->collect(node);
   }
 
-
-  SharedAbstractNode AstContext::zx(triton::uint32 sizeExt, const SharedAbstractNode& expr) {
+  SharedAbstractNode AstContext::zx(triton::uint32 sizeExt, const SharedAbstractNode& expr) 
+  {
     /* Optimization: Just return expr if the extend is zero */
     if (sizeExt == 0)
       return expr;

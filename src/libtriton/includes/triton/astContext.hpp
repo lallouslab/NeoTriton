@@ -341,6 +341,4 @@ namespace triton::ast
 
   //! Shared AST context
   using SharedAstContext = std::shared_ptr<triton::ast::AstContext>;
-
-/*! @} End of ast namespace */
 };
