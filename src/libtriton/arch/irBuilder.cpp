@@ -111,26 +111,24 @@ namespace triton::arch
     return ret;
   }
 
-
   triton::arch::exception_e IrBuilder::buildSemantics(triton::arch::BasicBlock& block) 
   {
     triton::arch::exception_e ret = triton::arch::NO_FAULT;
     triton::usize count = block.getSize();
 
-    for (auto& inst : block.getInstructions()) {
+    for (auto& inst : block.getInstructions()) 
+    {
       ret = this->buildSemantics(inst);
-      if (ret != triton::arch::NO_FAULT) {
+      if (ret != triton::arch::NO_FAULT)
         return ret;
-      }
+
       count--;
-      if (inst.isControlFlow() && count) {
+      if (inst.isControlFlow() && count)
         throw triton::exceptions::IrBuilder("IrBuilder::buildSemantics(): Do not add instructions in a block after a branch instruction.");
-      }
     }
 
     return ret;
   }
-
 
   void IrBuilder::preIrInit(triton::arch::Instruction& inst) 
   {
@@ -239,21 +237,23 @@ namespace triton::arch
     items.clear();
   }
 
-
-  void IrBuilder::collectNodes(std::vector<triton::arch::OperandWrapper>& operands) const {
-    for (auto& operand : operands) {
-      if (operand.getType() == triton::arch::OP_MEM) {
+  void IrBuilder::collectNodes(std::vector<triton::arch::OperandWrapper>& operands) const 
+  {
+    for (auto& operand : operands) 
+    {
+      if (operand.getType() == triton::arch::OP_MEM)
         operand.getMemory().setLeaAst(nullptr);
-      }
     }
   }
 
 
   template <typename T>
-  void IrBuilder::collectUnsymbolizedNodes(T& items) const {
+  void IrBuilder::collectUnsymbolizedNodes(T& items) const 
+  {
     T newItems;
 
-    for (const auto& item : items) {
+    for (const auto& item : items) 
+    {
       if (std::get<1>(item) && std::get<1>(item)->isSymbolized() == true)
         newItems.insert(item);
     }
@@ -261,7 +261,6 @@ namespace triton::arch
     items.clear();
     items = newItems;
   }
-
 
   void IrBuilder::collectUnsymbolizedNodes(std::vector<triton::arch::OperandWrapper>& operands) const 
   {
