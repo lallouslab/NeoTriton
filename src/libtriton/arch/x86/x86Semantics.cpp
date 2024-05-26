@@ -3139,8 +3139,8 @@ namespace triton::arch::x86
     this->controlFlow_s(inst);
   }
 
-
-  void x86Semantics::andn_s(triton::arch::Instruction& inst) {
+  void x86Semantics::andn_s(triton::arch::Instruction& inst) 
+  {
     auto& dst  = inst.operands[0];
     auto& src1 = inst.operands[1];
     auto& src2 = inst.operands[2];
@@ -3189,8 +3189,8 @@ namespace triton::arch::x86
     this->controlFlow_s(inst);
   }
 
-
-  void x86Semantics::andnps_s(triton::arch::Instruction& inst) {
+  void x86Semantics::andnps_s(triton::arch::Instruction& inst) 
+  {
     auto& dst = inst.operands[0];
     auto& src = inst.operands[1];
 
@@ -3585,7 +3585,8 @@ namespace triton::arch::x86
 
     /* Create the semantics */
     triton::ast::SharedAbstractNode node = nullptr;
-    switch (src.getSize()) {
+    switch (src.getSize()) 
+    {
       case triton::size::byte:
         node = this->astCtxt->ite(
                   this->astCtxt->equal(op2, this->astCtxt->bv(0, bvSize2)), /* Apply BSR only if op2 != 0 */
@@ -3771,7 +3772,8 @@ namespace triton::arch::x86
 
     /* Create the semantics */
     std::list<triton::ast::SharedAbstractNode> bytes;
-    switch (src.getSize()) {
+    switch (src.getSize()) 
+    {
       case triton::size::qword:
         bytes.push_front(this->astCtxt->extract(63, 56, op1));
         bytes.push_front(this->astCtxt->extract(55, 48, op1));
@@ -3801,7 +3803,8 @@ namespace triton::arch::x86
     expr->isTainted = this->taintEngine->taintAssignment(src, src);
 
     /* Tag undefined registers */
-    if (src.getSize() == triton::size::word) {
+    if (src.getSize() == triton::size::word) 
+    {
       // When the BSWAP instruction references a 16-bit register, the result is undefined.
       this->undefined_s(inst, src.getRegister());
     }

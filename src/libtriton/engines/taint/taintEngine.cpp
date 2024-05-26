@@ -11,7 +11,10 @@
 namespace triton::engines::taint 
 {
 
-  TaintEngine::TaintEngine(const triton::modes::SharedModes& modes, triton::engines::symbolic::SymbolicEngine* symbolicEngine, triton::arch::CpuInterface& cpu)
+  TaintEngine::TaintEngine(
+    const triton::modes::SharedModes& modes, 
+    triton::engines::symbolic::SymbolicEngine* symbolicEngine, 
+    triton::arch::CpuInterface& cpu)
     : modes(modes),
       symbolicEngine(symbolicEngine),
       cpu(cpu) 
@@ -133,7 +136,8 @@ namespace triton::engines::taint
 
   /* Sets the flag (taint or untaint) to an abstract operand (Register or Memory). */
   bool TaintEngine::setTaint(const triton::arch::OperandWrapper& op, bool flag) {
-    switch (op.getType()) {
+    switch (op.getType()) 
+    {
       case triton::arch::OP_IMM: return triton::engines::taint::UNTAINTED;
       case triton::arch::OP_MEM: return this->setTaintMemory(op.getConstMemory(), flag);
       case triton::arch::OP_REG: return this->setTaintRegister(op.getConstRegister(), flag);

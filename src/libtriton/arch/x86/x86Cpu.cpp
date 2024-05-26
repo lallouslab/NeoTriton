@@ -785,14 +785,19 @@ namespace triton::arch::x86
   }
 
 
-  void x86Cpu::setConcreteMemoryValue(triton::uint64 addr, triton::uint8 value, bool execCallbacks) {
+  void x86Cpu::setConcreteMemoryValue(triton::uint64 addr, triton::uint8 value, bool execCallbacks) 
+  {
     if (execCallbacks && this->callbacks)
       this->callbacks->processCallbacks(triton::callbacks::SET_CONCRETE_MEMORY_VALUE, MemoryAccess(addr, triton::size::byte), value);
     this->memory[addr] = value;
   }
 
 
-  void x86Cpu::setConcreteMemoryValue(const triton::arch::MemoryAccess& mem, const triton::uint512& value, bool execCallbacks) {
+  void x86Cpu::setConcreteMemoryValue(
+    const triton::arch::MemoryAccess& mem, 
+    const triton::uint512& value, 
+    bool execCallbacks) 
+  {
     triton::uint64 addr = mem.getAddress();
     triton::uint32 size = mem.getSize();
     triton::uint512 cv  = value;
@@ -806,12 +811,12 @@ namespace triton::arch::x86
     if (execCallbacks && this->callbacks)
       this->callbacks->processCallbacks(triton::callbacks::SET_CONCRETE_MEMORY_VALUE, mem, value);
 
-    for (triton::uint32 i = 0; i < size; i++) {
+    for (triton::uint32 i = 0; i < size; i++) 
+    {
       this->memory[addr+i] = static_cast<triton::uint8>(cv & 0xff);
       cv >>= 8;
     }
   }
-
 
   void x86Cpu::setConcreteMemoryAreaValue(triton::uint64 baseAddr, const triton::bytes& values, bool execCallbacks) {
     this->memory.reserve(values.size() + this->memory.size());

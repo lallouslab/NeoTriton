@@ -331,9 +331,9 @@ namespace triton
       TRITON_EXPORT void processCallbacks(triton::callbacks::callback_e kind, const triton::arch::MemoryAccess& mem);
 
       //! [**callbacks api**] - Processes callbacks according to the kind and the C++ polymorphism.
-      TRITON_EXPORT void processCallbacks(triton::callbacks::callback_e kind, const triton::arch::Register& reg);
-
-
+      TRITON_EXPORT void processCallbacks(
+        triton::callbacks::callback_e kind, 
+        const triton::arch::Register& reg);
 
       /* Modes API====================================================================================== */
 
