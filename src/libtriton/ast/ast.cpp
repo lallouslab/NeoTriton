@@ -3576,19 +3576,20 @@ namespace triton::ast
 
     for (auto&& n : nodes) 
     {
-      /* Do a copy of all children */
+      // Do a copy of all children
       const auto& newNode = shallowCopy(n.get(), unroll);
       exprs[n.get()] = newNode;
 
       // For each child, set its parent
       auto& children = newNode->getChildren();
-      for (auto& child : children) {
+      for (auto& child : children) 
+      {
         child = exprs[child.get()];
         child->setParent(newNode.get());
       }
     }
 
-    /* Return the root node */
+    // Return the root node
     return exprs.at(node);
   }
 

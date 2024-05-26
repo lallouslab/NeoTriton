@@ -3237,8 +3237,8 @@ namespace triton {
         }
       }
 
-
-      static PyObject* TritonContext_symbolizeRegister(PyObject* self, PyObject* args) {
+      static PyObject* TritonContext_symbolizeRegister(PyObject* self, PyObject* args) 
+      {
         PyObject* reg           = nullptr;
         PyObject* symVarAlias   = nullptr;
         std::string calias      = "";

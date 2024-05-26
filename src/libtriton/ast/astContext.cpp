@@ -40,7 +40,6 @@ namespace triton::ast
     return *this;
   }
 
-
   SharedAbstractNode AstContext::collect(const SharedAbstractNode& node) 
   {
     /*
@@ -819,8 +818,8 @@ namespace triton::ast
     return this->collect(node);
   }
 
-
-  SharedAbstractNode AstContext::equal(const SharedAbstractNode& expr1, const SharedAbstractNode& expr2) {
+  SharedAbstractNode AstContext::equal(const SharedAbstractNode& expr1, const SharedAbstractNode& expr2) 
+  {
     SharedAbstractNode node = std::make_shared<EqualNode>(expr1, expr2);
     if (node == nullptr)
       throw triton::exceptions::Ast("AstContext::equal(): Not enough memory.");

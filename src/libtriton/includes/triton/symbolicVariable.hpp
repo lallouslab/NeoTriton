@@ -71,31 +71,49 @@ namespace triton::engines::symbolic
       TRITON_EXPORT SymbolicVariable& operator=(const SymbolicVariable& other);
 
       //! Returns the symbolic variable type assignment.
-      TRITON_EXPORT triton::engines::symbolic::variable_e getType(void) const;
+      TRITON_EXPORT triton::engines::symbolic::variable_e getType(void) const { 
+        return this->type;
+      }
 
       //! Returns the alias of the symbolic variable.
-      TRITON_EXPORT const std::string& getAlias(void) const;
+      TRITON_EXPORT const std::string& getAlias(void) const {
+        return this->alias;
+      }
 
       //! Returns the comment of the symbolic variable.
-      TRITON_EXPORT const std::string& getComment(void) const;
+      TRITON_EXPORT const std::string& getComment(void) const {
+        return this->comment;
+      }
 
       //! Returns the name of the symbolic variable.
-      TRITON_EXPORT const std::string& getName(void) const;
+      TRITON_EXPORT const std::string& getName(void) const {
+        return this->name;
+      }
 
       //! Returns the id of the symbolic variable. This id is unique.
-      TRITON_EXPORT triton::usize getId(void) const;
+      TRITON_EXPORT triton::usize getId(void) const {
+        return this->id;
+      }
 
       //! Returns the source value of the symbolic variable.
-      TRITON_EXPORT triton::uint64 getOrigin(void) const;
+      TRITON_EXPORT triton::uint64 getOrigin(void) const {
+        return this->origin;
+      }
 
       //! Returns the size (in bits) of the symbolic variable.
-      TRITON_EXPORT triton::uint32 getSize(void) const;
+      TRITON_EXPORT triton::uint32 getSize(void) const {
+        return this->size;
+      }
 
       //! Sets the alias of the symbolic variable.
-      TRITON_EXPORT void setAlias(const std::string& alias);
+      TRITON_EXPORT void setAlias(const std::string& alias) {
+        this->alias = alias;
+      }
 
       //! Sets the comment of the symbolic variable.
-      TRITON_EXPORT void setComment(const std::string& comment);
+      TRITON_EXPORT void setComment(const std::string& comment) {
+        this->comment = comment;
+      }
   };
 
   //! Displays a symbolic variable.

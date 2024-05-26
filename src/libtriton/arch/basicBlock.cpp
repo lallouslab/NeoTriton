@@ -43,7 +43,6 @@ namespace triton::arch
     return true;
   }
 
-
   std::vector<triton::arch::Instruction>& BasicBlock::getInstructions(void) {
     return this->instructions;
   }
@@ -76,7 +75,6 @@ namespace triton::arch
     }
     return stream;
   }
-
 
   std::ostream& operator<<(std::ostream& stream, BasicBlock* block) {
     stream << *block;

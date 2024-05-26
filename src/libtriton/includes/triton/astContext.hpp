@@ -55,19 +55,10 @@ namespace triton::ast
       SharedAbstractNode simplify_extract(triton::uint32 high, triton::uint32 low, const SharedAbstractNode& expr);
 
     public:
-      //! Constructor
       TRITON_EXPORT AstContext(const triton::modes::SharedModes& modes);
-
-      //! Destructor
       TRITON_EXPORT ~AstContext();
-
-      //! Operator
       TRITON_EXPORT AstContext& operator=(const AstContext& other);
-
-      //! Collect new nodes
       TRITON_EXPORT SharedAbstractNode collect(const SharedAbstractNode& node);
-
-      //! Garbage unused nodes.
       TRITON_EXPORT void garbage(void);
 
       //! AST C++ API - array node builder
@@ -182,7 +173,8 @@ namespace triton::ast
       TRITON_EXPORT SharedAbstractNode bvxor(const SharedAbstractNode& expr1, const SharedAbstractNode& expr2);
 
       //! AST C++ API - compound node builder
-      template <typename T> SharedAbstractNode compound(const T& exprs) {
+      template <typename T> SharedAbstractNode compound(const T& exprs) 
+      {
         SharedAbstractNode node = std::make_shared<CompoundNode>(exprs, this->shared_from_this());
         if (node == nullptr)
           throw triton::exceptions::Ast("Node builders - Not enough memory");
@@ -194,11 +186,11 @@ namespace triton::ast
       TRITON_EXPORT SharedAbstractNode concat(const SharedAbstractNode& expr1, const SharedAbstractNode& expr2);
 
       //! AST C++ API - concat node builder
-      template <typename T> SharedAbstractNode concat(const T& exprs) {
+      template <typename T> SharedAbstractNode concat(const T& exprs) 
+      {
         /* Do not concat if there is only one element */
-        if (exprs.size() == 1) {
+        if (exprs.size() == 1)
           return exprs.front();
-        }
 
         /* Allocate node */
         SharedAbstractNode node = std::make_shared<ConcatNode>(exprs, this->shared_from_this());
@@ -212,7 +204,8 @@ namespace triton::ast
             return this->bv(node->evaluate(), node->getBitvectorSize());
         }
 
-        if (this->modes->isModeEnabled(triton::modes::AST_OPTIMIZATIONS)) {
+        if (this->modes->isModeEnabled(triton::modes::AST_OPTIMIZATIONS)) 
+        {
           /* Optimization: concatenate extractions in one if possible */
           auto n = this->simplify_concat(std::vector<SharedAbstractNode>(exprs.begin(), exprs.end()));
           if (n)
@@ -307,7 +300,10 @@ namespace triton::ast
       TRITON_EXPORT SharedAbstractNode store(const SharedAbstractNode& array, triton::usize index, const SharedAbstractNode& expr);
 
       //! AST C++ API - store node builder
-      TRITON_EXPORT SharedAbstractNode store(const SharedAbstractNode& array, const SharedAbstractNode& index, const SharedAbstractNode& expr);
+      TRITON_EXPORT SharedAbstractNode store(
+        const SharedAbstractNode& array, 
+        const SharedAbstractNode& index, 
+        const SharedAbstractNode& expr);
 
       //! AST C++ API - string node builder
       TRITON_EXPORT SharedAbstractNode string(std::string value);
@@ -329,9 +325,6 @@ namespace triton::ast
 
       //! Gets a variable node from its name.
       SharedAbstractNode getVariableNode(const std::string& name);
-
-      //! Returns the address space used for the ABV logic.
-      TRITON_EXPORT triton::uint16 getArraySize(void) const;
 
       //! Gets a variable value from its name.
       TRITON_EXPORT const triton::uint512& getVariableValue(const std::string& name) const;

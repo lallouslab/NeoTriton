@@ -574,7 +574,9 @@ void Context::symbolizeMemory(uint64 addr, usize size) {
 }
 
 
-engines::symbolic::SharedSymbolicVariable Context::symbolizeRegister(const arch::Register& reg, const std::string& symVarAlias) 
+engines::symbolic::SharedSymbolicVariable Context::symbolizeRegister(
+  const arch::Register& reg, 
+  const std::string& symVarAlias) 
 {
   this->checkSymbolic();
   return this->symbolic->symbolizeRegister(reg, symVarAlias);

@@ -29,17 +29,9 @@
 #include <triton/symbolicVariable.hpp>
 #include <triton/tritonTypes.hpp>
 
-
-
 //! The Symbolic Execution namespace
 namespace triton::engines::symbolic 
 {
-/*!
-  *  \ingroup engines
-  *  \addtogroup symbolic
-  *  @{
-  */
-
   //! \class SymbolicEngine
   /*! \brief The symbolic engine class. */
   class SymbolicEngine

@@ -56,46 +56,8 @@ namespace triton::engines::symbolic
     return *this;
   }
 
-
-  triton::engines::symbolic::variable_e SymbolicVariable::getType(void) const {
-    return this->type;
-  }
-
-  const std::string& SymbolicVariable::getAlias(void) const {
-    return this->alias;
-  }
-
-  const std::string& SymbolicVariable::getComment(void) const {
-    return this->comment;
-  }
-
-  const std::string& SymbolicVariable::getName(void) const {
-    return this->name;
-  }
-
-
-  triton::usize SymbolicVariable::getId(void) const {
-    return this->id;
-  }
-
-  triton::uint64 SymbolicVariable::getOrigin(void) const {
-    return this->origin;
-  }
-
-  triton::uint32 SymbolicVariable::getSize(void) const {
-    return this->size;
-  }
-
-  void SymbolicVariable::setAlias(const std::string& alias) {
-    this->alias = alias;
-  }
-
-
-  void SymbolicVariable::setComment(const std::string& comment) {
-    this->comment = comment;
-  }
-
-  std::ostream& operator<<(std::ostream& stream, const SymbolicVariable& symVar) {
+  std::ostream& operator<<(std::ostream& stream, const SymbolicVariable& symVar) 
+  {
     if (symVar.getAlias().empty())
       stream << symVar.getName() << ":" << symVar.getSize();
     else
@@ -103,7 +65,8 @@ namespace triton::engines::symbolic
     return stream;
   }
 
-  std::ostream& operator<<(std::ostream& stream, const SymbolicVariable* symVar) {
+  std::ostream& operator<<(std::ostream& stream, const SymbolicVariable* symVar) 
+  {
     stream << *symVar;
     return stream;
   }
