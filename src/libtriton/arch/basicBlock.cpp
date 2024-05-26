@@ -18,6 +18,10 @@ namespace triton::arch
     this->instructions = other.instructions;
   }
 
+  BasicBlock::~BasicBlock() {
+    this->instructions.clear();
+  }
+
   BasicBlock& BasicBlock::operator=(const BasicBlock& other) {
     this->instructions = other.instructions;
     return *this;

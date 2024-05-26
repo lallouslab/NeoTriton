@@ -17,7 +17,7 @@ set(VERSION_MINOR 0)
 set(VERSION_BUILD ${BUILD_NUMBER})
 
 # Used for write_basic_package_version_file()
-project(triton VERSION ${VERSION_MAJOR}.${VERSION_MINOR})
+project(neotriton VERSION ${VERSION_MAJOR}.${VERSION_MINOR})
 
 # Define cmake options
 include(CMakeDependentOption)

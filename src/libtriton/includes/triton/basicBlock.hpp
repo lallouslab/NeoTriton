@@ -34,6 +34,9 @@ namespace triton::arch
       //! Constructor by copy.
       TRITON_EXPORT BasicBlock(const BasicBlock& other);
 
+      //! Destructor.
+      TRITON_EXPORT ~BasicBlock();
+
       //! Copies an BasicBlock.
       TRITON_EXPORT BasicBlock& operator=(const BasicBlock& other);
 
