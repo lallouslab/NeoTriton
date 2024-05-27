@@ -72,17 +72,16 @@ bool Context::isArchitectureValid(void) const {
   return this->arch.isValid();
 }
 
-
 arch::architecture_e Context::getArchitecture(void) const {
   return this->arch.getArchitecture();
 }
-
 
 arch::endianness_e Context::getEndianness(void) const {
   return this->arch.getEndianness();
 }
 
-arch::CpuInterface* Context::getCpuInstance(void) {
+arch::CpuInterface* Context::getCpuInstance(void) 
+{
   if (!this->isArchitectureValid())
     throw exceptions::Context("Context::checkArchitecture(): You must define an architecture.");
   return this->arch.getCpuInstance();
@@ -98,7 +97,8 @@ void Context::setArchitecture(arch::architecture_e arch)
   this->initEngines();
 }
 
-void Context::clearArchitecture(void) {
+void Context::clearArchitecture(void) 
+{
   this->checkArchitecture();
   this->arch.clearArchitecture();
 }

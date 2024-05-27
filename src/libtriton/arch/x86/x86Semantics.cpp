@@ -13955,7 +13955,8 @@ namespace triton::arch::x86
   }
 
 
-  void x86Semantics::push_s(triton::arch::Instruction& inst) {
+  void x86Semantics::push_s(triton::arch::Instruction& inst) 
+  {
     auto& src           = inst.operands[0];
     auto stack          = this->architecture->getStackPointer();
     triton::uint32 size = stack.getSize();
@@ -13984,8 +13985,8 @@ namespace triton::arch::x86
     this->controlFlow_s(inst);
   }
 
-
-  void x86Semantics::pushal_s(triton::arch::Instruction& inst) {
+  void x86Semantics::pushal_s(triton::arch::Instruction& inst) 
+  {
     auto stack      = this->architecture->getStackPointer();
     auto stackValue = static_cast<triton::uint64>(this->architecture->getConcreteRegisterValue(stack));
     auto dst1       = triton::arch::OperandWrapper(triton::arch::MemoryAccess(stackValue-(stack.getSize() * 1), stack.getSize()));
@@ -14050,8 +14051,8 @@ namespace triton::arch::x86
     this->controlFlow_s(inst);
   }
 
-
-  void x86Semantics::pushfd_s(triton::arch::Instruction& inst) {
+  void x86Semantics::pushfd_s(triton::arch::Instruction& inst) 
+  {
     auto stack = this->architecture->getStackPointer();
 
     /* Create the semantics - side effect */
@@ -14072,7 +14073,7 @@ namespace triton::arch::x86
     auto src13      = triton::arch::OperandWrapper(this->architecture->getRegister(ID_REG_X86_VIP));
     auto src14      = triton::arch::OperandWrapper(this->architecture->getRegister(ID_REG_X86_ID));
 
-    /* Create symbolic operands */
+    // Create symbolic operands
     auto op1  = this->symbolicEngine->getOperandAst(inst, src1);
     auto op2  = this->symbolicEngine->getOperandAst(inst, src2);
     auto op3  = this->symbolicEngine->getOperandAst(inst, src3);
@@ -14088,7 +14089,7 @@ namespace triton::arch::x86
     auto op13 = this->symbolicEngine->getOperandAst(inst, src13);
     auto op14 = this->symbolicEngine->getOperandAst(inst, src14);
 
-    /* Create the semantics */
+    // Create the semantics
     std::vector<triton::ast::SharedAbstractNode> eflags;
     eflags.reserve(22);
 
@@ -14117,8 +14118,7 @@ namespace triton::arch::x86
 
     auto node = this->astCtxt->zx(
                   dst.getBitSize() - static_cast<triton::uint32>(eflags.size()),
-                  this->astCtxt->concat(eflags)
-                );
+                  this->astCtxt->concat(eflags));
 
     /* Create symbolic expression */
     auto expr = this->symbolicEngine->createSymbolicExpression(inst, node, dst, "PUSHFD operation");
@@ -14143,8 +14143,8 @@ namespace triton::arch::x86
     this->controlFlow_s(inst);
   }
 
-
-  void x86Semantics::pushfq_s(triton::arch::Instruction& inst) {
+  void x86Semantics::pushfq_s(triton::arch::Instruction& inst) 
+  {
     auto stack = this->architecture->getStackPointer();
 
     /* Create the semantics - side effect */
@@ -14236,8 +14236,8 @@ namespace triton::arch::x86
     this->controlFlow_s(inst);
   }
 
-
-  void x86Semantics::pxor_s(triton::arch::Instruction& inst) {
+  void x86Semantics::pxor_s(triton::arch::Instruction& inst) 
+  {
     auto& dst = inst.operands[0];
     auto& src = inst.operands[1];
 
@@ -14264,8 +14264,8 @@ namespace triton::arch::x86
     this->controlFlow_s(inst);
   }
 
-
-  void x86Semantics::rcl_s(triton::arch::Instruction& inst) {
+  void x86Semantics::rcl_s(triton::arch::Instruction& inst) 
+  {
     auto& dst   = inst.operands[0];
     auto& src   = inst.operands[1];
     auto  srcCf = triton::arch::OperandWrapper(this->architecture->getRegister(ID_REG_X86_CF));
@@ -14276,13 +14276,13 @@ namespace triton::arch::x86
     auto op2bis = this->symbolicEngine->getOperandAst(src);
     auto op3    = this->symbolicEngine->getOperandAst(inst, srcCf);
 
-    switch (dst.getBitSize()) {
+    switch (dst.getBitSize()) 
+    {
       /* Mask: 0x1f without MOD */
       case triton::bitsize::qword:
         op2 = this->astCtxt->bvand(
                 op2,
-                this->astCtxt->bv(triton::bitsize::qword-1, src.getBitSize())
-              );
+                this->astCtxt->bv(triton::bitsize::qword-1, src.getBitSize()));
         break;
 
       /* Mask: 0x1f without MOD */
@@ -14311,8 +14311,7 @@ namespace triton::arch::x86
     /* Create the semantics */
     auto node1 = this->astCtxt->bvrol(
                     this->astCtxt->concat(op3, op1),
-                    this->astCtxt->zx(((op1->getBitvectorSize() + op3->getBitvectorSize()) - op2->getBitvectorSize()), op2)
-                  );
+                    this->astCtxt->zx(((op1->getBitvectorSize() + op3->getBitvectorSize()) - op2->getBitvectorSize()), op2));
 
     /* Create symbolic expression */
     auto expr1 = this->symbolicEngine->createSymbolicVolatileExpression(inst, node1, "RCL tempory operation");
@@ -18849,25 +18848,25 @@ namespace triton::arch::x86
     this->controlFlow_s(inst);
   }
 
-
-  void x86Semantics::xorps_s(triton::arch::Instruction& inst) {
+  void x86Semantics::xorps_s(triton::arch::Instruction& inst) 
+  {
     auto& dst = inst.operands[0];
     auto& src = inst.operands[1];
 
-    /* Create symbolic operands */
+    // Create symbolic operands
     auto op1 = this->symbolicEngine->getOperandAst(inst, dst);
     auto op2 = this->symbolicEngine->getOperandAst(inst, src);
 
-    /* Create the semantics */
+    // Create the semantics
     auto node = this->astCtxt->bvxor(op1, op2);
 
-    /* Create symbolic expression */
+    // Create symbolic expression
     auto expr = this->symbolicEngine->createSymbolicExpression(inst, node, dst, "XORPS operation");
 
-    /* Spread taint */
+    // Spread taint
     expr->isTainted = this->taintEngine->taintUnion(dst, src);
 
-    /* Update the symbolic control flow */
+    // Update the symbolic control flow
     this->controlFlow_s(inst);
   }
 }

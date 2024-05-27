@@ -699,16 +699,22 @@ namespace triton::engines::symbolic
   }
 
   /* Returns the AST corresponding to the operand. */
-  triton::ast::SharedAbstractNode SymbolicEngine::getOperandAst(triton::arch::Instruction& inst, const triton::arch::OperandWrapper& op) {
-    switch (op.getType()) {
-      case triton::arch::OP_IMM: return this->getImmediateAst(inst, op.getConstImmediate());
-      case triton::arch::OP_MEM: return this->getMemoryAst(inst, op.getConstMemory());
-      case triton::arch::OP_REG: return this->getRegisterAst(inst, op.getConstRegister());
+  triton::ast::SharedAbstractNode SymbolicEngine::getOperandAst(
+    triton::arch::Instruction& inst, 
+    const triton::arch::OperandWrapper& op) 
+  {
+    switch (op.getType()) 
+    {
+      case triton::arch::OP_IMM: 
+        return this->getImmediateAst(inst, op.getConstImmediate());
+      case triton::arch::OP_MEM: 
+        return this->getMemoryAst(inst, op.getConstMemory());
+      case triton::arch::OP_REG: 
+        return this->getRegisterAst(inst, op.getConstRegister());
       default:
         throw triton::exceptions::SymbolicEngine("SymbolicEngine::getOperandAst(): Invalid operand.");
     }
   }
-
 
   triton::ast::SharedAbstractNode SymbolicEngine::getShiftAst(
     const triton::arch::arm::ArmOperandProperties& shift, 
