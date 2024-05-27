@@ -543,7 +543,11 @@ namespace triton
         * **item1**: symbolic variable id<br>
         * **item2**: model
         */
-      TRITON_EXPORT std::unordered_map<triton::usize, triton::engines::solver::SolverModel> getModel(const triton::ast::SharedAbstractNode& node, triton::engines::solver::status_e* status = nullptr, triton::uint32 timeout = 0, triton::uint32* solvingTime = nullptr) const;
+      TRITON_EXPORT std::unordered_map<triton::usize, triton::engines::solver::SolverModel> getModel(
+        const triton::ast::SharedAbstractNode& node, 
+        triton::engines::solver::status_e* status = nullptr, 
+        triton::uint32 timeout = 0, 
+        triton::uint32* solvingTime = nullptr) const;
 
       /*!
         * \brief [**solver api**] - Computes and returns several models from a symbolic constraint. The `limit` is the number of models returned. State is returned in the `status` pointer as well as the solving time. A `timeout` can also be defined.
@@ -552,7 +556,12 @@ namespace triton
         * **item1**: symbolic variable id<br>
         * **item2**: model
         */
-      TRITON_EXPORT std::vector<std::unordered_map<triton::usize, triton::engines::solver::SolverModel>> getModels(const triton::ast::SharedAbstractNode& node, triton::uint32 limit, triton::engines::solver::status_e* status = nullptr, triton::uint32 timeout = 0, triton::uint32* solvingTime = nullptr) const;
+      TRITON_EXPORT std::vector<std::unordered_map<triton::usize, triton::engines::solver::SolverModel>> getModels(
+        const triton::ast::SharedAbstractNode& node, 
+        triton::uint32 limit, 
+        triton::engines::solver::status_e* status = nullptr, 
+        triton::uint32 timeout = 0, 
+        triton::uint32* solvingTime = nullptr) const;
 
       //! Returns true if an expression is satisfiable.
       TRITON_EXPORT bool isSat(const triton::ast::SharedAbstractNode& node, triton::engines::solver::status_e* status = nullptr, triton::uint32 timeout = 0, triton::uint32* solvingTime = nullptr) const;

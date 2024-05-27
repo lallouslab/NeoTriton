@@ -10,8 +10,6 @@
 
 #include <triton/config.hpp>
 
-
-
 //! The Triton namespace
 namespace triton {
 /*!

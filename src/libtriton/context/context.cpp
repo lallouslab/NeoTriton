@@ -962,7 +962,12 @@ std::unordered_map<usize, engines::solver::SolverModel> Context::getModel(const 
 }
 
 
-std::vector<std::unordered_map<usize, engines::solver::SolverModel>> Context::getModels(const ast::SharedAbstractNode& node, uint32 limit, engines::solver::status_e* status, uint32 timeout, uint32* solvingTime) const {
+std::vector<std::unordered_map<usize, engines::solver::SolverModel>> Context::getModels(
+  const ast::SharedAbstractNode& node, 
+  uint32 limit, engines::solver::status_e* status, 
+  uint32 timeout, 
+  uint32* solvingTime) const 
+{
   this->checkSolver();
   return this->solver->getModels(node, limit, status, timeout, solvingTime);
 }
