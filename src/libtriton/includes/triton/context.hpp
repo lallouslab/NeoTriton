@@ -687,14 +687,10 @@ namespace triton
       //! [**taint api**] - Taints RegisterRegister with assignment. Returns true if the regDst is tainted.
       TRITON_EXPORT bool taintAssignment(const triton::arch::Register& regDst, const triton::arch::Register& regSrc);
 
-
-
       /* Synthesizer engine API ============================================================================== */
 
       //! [**synthesizer api**] - Synthesizes a given node. If `constant` is true, perform a constant synthesis. If `opaque` is true, perform opaque constant synthesis. If `subexpr` is true, analyze children AST.
       TRITON_EXPORT triton::engines::synthesis::SynthesisResult synthesize(const triton::ast::SharedAbstractNode& node, bool constant=true, bool subexpr=true, bool opaque=false);
-
-
 
       /* Lifters engine API ================================================================================= */
 

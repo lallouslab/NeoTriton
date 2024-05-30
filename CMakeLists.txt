@@ -219,7 +219,7 @@ else()
 endif()
 
 if(PYTHON_BINDINGS_AUTOCOMPLETE)
-    message(STATUS "Compiling with Python autocomplete stub")
+    message(STATUS "Compiling with Python auto-complete stub")
 endif()
 
 add_subdirectory(src)
