@@ -3310,7 +3310,8 @@ namespace triton::ast
   }
 
 
-  void VariableNode::init(bool withParents) {
+  void VariableNode::init(bool withParents) 
+  {
     this->size        = this->symVar->getSize();
     this->eval        = this->ctxt->getVariableValue(this->symVar->getName()) & this->getBitvectorMask();
     this->symbolized  = true;

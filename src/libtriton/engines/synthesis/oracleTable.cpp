@@ -69,7 +69,8 @@ namespace triton::engines::synthesis::oracles
 
   //! The oracle table for binary operators. Each entry is a BinaryEntry object.
   /*! \brief Entry: <bits> <x value> <y value> <result> <operator> */
-  std::map<triton::ast::ast_e, std::array<BinaryEntry, 40>> binopTable = {
+  std::map<triton::ast::ast_e, std::array<BinaryEntry, 40>> binopTable = 
+  {
     /* bvadd synthesis */
     {
       triton::ast::BVADD_NODE, {
@@ -267,7 +268,8 @@ namespace triton::engines::synthesis::oracles
     },
     /* bvurem synthesis */
     {
-      triton::ast::BVUREM_NODE, {
+      triton::ast::BVUREM_NODE, 
+      {
         BinaryEntry(8, 0x95, 0xaa, 0x95), BinaryEntry(16, 0xc09e, 0xd941, 0xc09e), BinaryEntry(32, 0x1b8d5434, 0x78a4c013, 0x1b8d5434), BinaryEntry(64, 0xbe704f49a47019e6, 0x1c1d426adfa831b1, 0x15c0c0c8667eefc0),
         BinaryEntry(8, 0x30, 0x93, 0x30), BinaryEntry(16, 0x230d, 0x1662, 0x0cab), BinaryEntry(32, 0xfec61cce, 0x7d000ea3, 0x04c5ff88), BinaryEntry(64, 0xe8a6cb521eb42e18, 0x214f0c2dbbc2abfc, 0x20cc823fb8242630),
         BinaryEntry(8, 0x02, 0xb0, 0x02), BinaryEntry(16, 0x51c4, 0x6e79, 0x51c4), BinaryEntry(32, 0xf31d575a, 0xb7b132b7, 0x3b6c24a3), BinaryEntry(64, 0xc75e76a4b3a70416, 0xe6c459b52980e9c1, 0xc75e76a4b3a70416),
@@ -282,7 +284,8 @@ namespace triton::engines::synthesis::oracles
     },
     /* bvxnor synthesis */
     {
-      triton::ast::BVXNOR_NODE, {
+      triton::ast::BVXNOR_NODE, 
+      {
         BinaryEntry(8, 0x07, 0xdd, 0x25), BinaryEntry(16, 0xa1ec, 0x7f21, 0x2132), BinaryEntry(32, 0x05601358, 0x837bda03, 0x79e436a4), BinaryEntry(64, 0x8af45257cf2a0ce7, 0xc456ab65a00733f8, 0xb15d06cd90d2c0e0),
         BinaryEntry(8, 0x59, 0x63, 0xc5), BinaryEntry(16, 0xe113, 0x55cf, 0x4b23), BinaryEntry(32, 0x21a1e372, 0xbc6d2148, 0x62333dc5), BinaryEntry(64, 0xe573378bfad38fd9, 0xd00d15aa94e76296, 0xca81ddde91cb12b0),
         BinaryEntry(8, 0x25, 0x27, 0xfd), BinaryEntry(16, 0xebb7, 0xaa49, 0xbe01), BinaryEntry(32, 0x0b553cbd, 0x08f8f650, 0xfc523512), BinaryEntry(64, 0x8db777183f1a913d, 0x978ed9b8c892ddcd, 0xe5c6515f0877b30f),

@@ -1073,37 +1073,44 @@ namespace triton::ast
   }
 
 
-  void AstContext::initVariable(const std::string& name, const triton::uint512& value, const SharedAbstractNode& node) {
+  void AstContext::initVariable(
+    const std::string& name, 
+    const triton::uint512& value, 
+    const SharedAbstractNode& node) 
+  {
     auto it = this->valueMapping.find(name);
-    if (it == this->valueMapping.end()) {
+    if (it == this->valueMapping.end())
       this->valueMapping.insert(std::make_pair(name, std::make_pair(node, value)));
-    }
-    else {
+    else
       throw triton::exceptions::Ast("AstContext::initVariable(): Ast variable already initialized.");
-    }
   }
 
-
-  void AstContext::updateVariable(const std::string& name, const triton::uint512& value) {
+  void AstContext::updateVariable(const std::string& name, const triton::uint512& value) 
+  {
     auto it = this->valueMapping.find(name);
-    if (it != this->valueMapping.end()) {
-      if (auto node = it->second.first.lock()) {
+    if (it != this->valueMapping.end()) 
+    {
+      if (auto node = it->second.first.lock()) 
+      {
         it->second.second = value;
         node->initParents();
       }
-      else {
+      else 
+      {
         throw triton::exceptions::Ast("AstContext::updateVariable(): This symbolic variable is dead.");
       }
     }
-    else {
+    else 
+    {
       throw triton::exceptions::Ast("AstContext::updateVariable(): This symbolic variable is not assigned at any AbstractNode or does not exist.");
     }
   }
 
-
-  SharedAbstractNode AstContext::getVariableNode(const std::string& name) {
+  SharedAbstractNode AstContext::getVariableNode(const std::string& name) 
+  {
     auto it = this->valueMapping.find(name);
-    if (it != this->valueMapping.end()) {
+    if (it != this->valueMapping.end()) 
+    {
       if (auto node = it->second.first.lock())
         return node;
       else
@@ -1113,10 +1120,11 @@ namespace triton::ast
     return nullptr;
   }
 
-
-  const triton::uint512& AstContext::getVariableValue(const std::string& name) const {
+  const triton::uint512& AstContext::getVariableValue(const std::string& name) const 
+  {
     auto it = this->valueMapping.find(name);
-    if (it != this->valueMapping.end()) {
+    if (it != this->valueMapping.end()) 
+    {
       if (auto node = it->second.first.lock())
         return it->second.second;
       else
@@ -1126,21 +1134,18 @@ namespace triton::ast
     throw triton::exceptions::Ast("AstContext::updateVariable(): Variable does not exist.");
   }
 
-
-  void AstContext::setRepresentationMode(triton::ast::representations::mode_e mode) {
+  void AstContext::setRepresentationMode(triton::ast::representations::mode_e mode) 
+  {
     this->astRepresentation.setMode(mode);
   }
-
 
   triton::ast::representations::mode_e AstContext::getRepresentationMode(void) const {
     return this->astRepresentation.getMode();
   }
 
-
   std::ostream& AstContext::print(std::ostream& stream, AbstractNode* node) {
     return this->astRepresentation.print(stream, node);
   }
-
 
   SharedAbstractNode AstContext::simplify_concat(std::vector<SharedAbstractNode> exprs) 
   {
@@ -1170,32 +1175,33 @@ namespace triton::ast
       /* Returns the first non reference node encountered */
       n = triton::ast::dereference(n);
 
-      if (n->getType() == CONCAT_NODE) {
+      if (n->getType() == CONCAT_NODE) 
+      {
         /* Append concatenation children to the right */
-        for (const SharedAbstractNode& part : n->getChildren()) {
+        for (const SharedAbstractNode& part : n->getChildren())
           exprs.push_back(part);
-        }
+
         continue;
       }
 
-      if (n->getType() != EXTRACT_NODE) {
-        /* We cannot optimize if at least one node is not an extract */
+      /* We cannot optimize if at least one node is not an extract */
+      if (n->getType() != EXTRACT_NODE)
         return 0;
-      }
 
       /* Get extraction arguments */
       const auto& childs = n->getChildren();
       triton::uint32 hi = triton::ast::getInteger<triton::uint32>(childs[0]);
       triton::uint32 lo = triton::ast::getInteger<triton::uint32>(childs[1]);
-      if (hi < lo) {
+      if (hi < lo)
         return 0;
-      }
+
       n = childs[2];
 
       /* Returns the first non reference node encountered */
       n = triton::ast::dereference(n);
 
-      if (!ast_ref) {
+      if (!ast_ref) 
+      {
         /* First found extraction node */
         high = hi;
         low = lo;
@@ -1223,20 +1229,24 @@ namespace triton::ast
     return this->extract(high, low, ast_ref);
   }
 
-
-  SharedAbstractNode AstContext::simplify_extract(triton::uint32 high, triton::uint32 low, const SharedAbstractNode& expr) {
+  SharedAbstractNode AstContext::simplify_extract(
+    triton::uint32 high, 
+    triton::uint32 low, 
+    const SharedAbstractNode& expr) 
+  {
     triton::uint32 size = expr->getBitvectorSize();
 
-    if (high <= low || high >= size) {
+    if (high <= low || high >= size)
       return 0;
-    }
 
     SharedAbstractNode node = expr;
-    while (true) {
+    while (true) 
+    {
       /* Returns the first non reference node encountered */
       SharedAbstractNode n = triton::ast::dereference(node);
 
-      if (n->getType() == CONCAT_NODE) {
+      if (n->getType() == CONCAT_NODE) 
+      {
         /*
           * Optimization: If we extract the full part of concatenation, just
           * return the part. We are trying to find a part of concatenation
@@ -1261,7 +1271,8 @@ namespace triton::ast
             /* We are extracting the full part, just return it */
             return part;
           }
-          if (hi >= high && lo <= low) {
+          if (hi >= high && lo <= low) 
+          {
             /* Extract from part: ((_ extract high-lo low-lo) part) */
             node = part;
             high -= lo;

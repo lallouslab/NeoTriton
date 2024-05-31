@@ -23,13 +23,6 @@
 
 namespace triton::engines ::synthesis 
 {
-/*!
-  *  \ingroup engines
-  *  \addtogroup synthesis
-  *  @{
-  */
-
-  //! The Synthesis namespace
   namespace oracles 
   {
     //! The oracle table for unary operators. Each entry is a UnaryEntry object.

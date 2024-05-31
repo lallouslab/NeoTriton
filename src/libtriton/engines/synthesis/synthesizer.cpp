@@ -45,7 +45,7 @@ namespace triton::engines::synthesis
     auto node = triton::ast::newInstance(input.get(), true);
 
     // Do the synthesize and if nothing has been synthesized, try on children expression
-    if (this->do_synthesize(node, constant, opaque, result) == false) 
+    if (!this->do_synthesize(node, constant, opaque, result)) 
     {
       if (subexpr == true) 
       {
@@ -67,8 +67,11 @@ namespace triton::engines::synthesis
     return result;
   }
 
-
-  bool Synthesizer::do_synthesize(const triton::ast::SharedAbstractNode& node, bool constant, bool opaque, SynthesisResult& result) 
+  bool Synthesizer::do_synthesize(
+    const triton::ast::SharedAbstractNode& node, 
+    bool constant, 
+    bool opaque, 
+    SynthesisResult& result) 
   {
     bool ret = false;
 
@@ -76,24 +79,23 @@ namespace triton::engines::synthesis
     auto vars = triton::ast::search(node, triton::ast::VARIABLE_NODE);
 
     // If there is one symbolic variable, do unary operators synthesis
-    if (vars.size() == 1 && node->getLevel() > 2) {
+    if (vars.size() == 1 && node->getLevel() > 2) 
+    {
       ret = this->unaryOperatorSynthesis(vars, node, result);
 
       // Do also constant synthesis
-      if (ret == false && constant == true) {
+      if (ret == false && constant == true)
         ret = this->constantSynthesis(vars, node, result);
-      }
     }
-
     // If there is two symbolic variables, do binary operators synthesis
-    else if (vars.size() == 2 && node->getLevel() > 2) {
+    else if (vars.size() == 2 && node->getLevel() > 2) 
+    {
       ret = this->binaryOperatorSynthesis(vars, node, result);
     }
 
     // If nothing worked, do constant opaque synthesis
-    if (vars.size() && ret == false && opaque == true && node->getLevel() > 2) {
+    if (vars.size() && ret == false && opaque == true && node->getLevel() > 2)
       ret = this->opaqueConstantSynthesis(vars, node, result);
-    }
 
     return ret;
   }
@@ -176,7 +178,7 @@ namespace triton::engines::synthesis
 
 
   bool Synthesizer::unaryOperatorSynthesis(const std::deque<triton::ast::SharedAbstractNode>& vars, const triton::ast::SharedAbstractNode& node, SynthesisResult& result) {
-    /* We start by saving orignal value of symbolic variable */
+    /* We start by saving original value of symbolic variable */
     auto var_x = reinterpret_cast<triton::ast::VariableNode*>(vars[0].get())->getSymbolicVariable();
     auto actx  = node->getContext();
 
@@ -243,15 +245,19 @@ namespace triton::engines::synthesis
       // If not found, continuing to iterate over oracles
     }
 
-    // Whatever the result, we must restore orignal value of the symbolic variable
+    // Whatever the result, we must restore original value of the symbolic variable
     actx->updateVariable(var_x->getName(), save_x);
 
     return result.successful();
   }
 
 
-  bool Synthesizer::binaryOperatorSynthesis(const std::deque<triton::ast::SharedAbstractNode>& vars, const triton::ast::SharedAbstractNode& node, SynthesisResult& result) {
-    /* We start by saving orignal value of symbolic variables */
+  bool Synthesizer::binaryOperatorSynthesis(
+    const std::deque<triton::ast::SharedAbstractNode>& vars, 
+    const triton::ast::SharedAbstractNode& node, 
+    SynthesisResult& result) 
+  {
+    /* We start by saving original value of symbolic variables */
     auto var_x = reinterpret_cast<triton::ast::VariableNode*>(vars[0].get())->getSymbolicVariable();
     auto var_y = reinterpret_cast<triton::ast::VariableNode*>(vars[1].get())->getSymbolicVariable();
     auto actx  = node->getContext();
@@ -268,45 +274,65 @@ namespace triton::engines::synthesis
     if (bits != 8 && bits != 16 && bits != 32 && bits != 64)
       return false;
 
-    for (auto const& it : triton::engines::synthesis::oracles::binopTable) {
+    for (auto const& it : triton::engines::synthesis::oracles::binopTable) 
+    {
       triton::ast::ast_e op = it.first;
       std::array<BinaryEntry, 40> oracles = it.second;
 
       bool found = true;
-      for (auto const& oracle : oracles) {
+      for (auto const& oracle : oracles) 
+      {
         // Ignore oracle that is not on same size
-        if (oracle.bits != bits) {
+        if (oracle.bits != bits)
           continue;
-        }
 
         // Inject values
         actx->updateVariable(var_x->getName(), oracle.x);
         actx->updateVariable(var_y->getName(), oracle.y);
-        if (node->evaluate() != oracle.r) {
+        if (node->evaluate() != oracle.r) 
+        {
           found = false;
           break;
         }
       }
 
       // If an oracle is found, we craft a synthesized node.
-      if (found) {
-        switch (op) {
-          case triton::ast::BVADD_NODE:   result.setOutput(actx->bvadd(actx->variable(var_x),  actx->variable(var_y))); break;
-          case triton::ast::BVAND_NODE:   result.setOutput(actx->bvand(actx->variable(var_x),  actx->variable(var_y))); break;
-          case triton::ast::BVMUL_NODE:   result.setOutput(actx->bvmul(actx->variable(var_x),  actx->variable(var_y))); break;
-          case triton::ast::BVNAND_NODE:  result.setOutput(actx->bvnand(actx->variable(var_x), actx->variable(var_y))); break;
-          case triton::ast::BVNOR_NODE:   result.setOutput(actx->bvnor(actx->variable(var_x),  actx->variable(var_y))); break;
-          case triton::ast::BVOR_NODE:    result.setOutput(actx->bvor(actx->variable(var_x),   actx->variable(var_y))); break;
-          case triton::ast::BVROL_NODE:   result.setOutput(actx->bvrol(actx->variable(var_x),  actx->variable(var_y))); break;
-          case triton::ast::BVROR_NODE:   result.setOutput(actx->bvror(actx->variable(var_x),  actx->variable(var_y))); break;
-          case triton::ast::BVSDIV_NODE:  result.setOutput(actx->bvsdiv(actx->variable(var_x), actx->variable(var_y))); break;
-          case triton::ast::BVSMOD_NODE:  result.setOutput(actx->bvsmod(actx->variable(var_x), actx->variable(var_y))); break;
-          case triton::ast::BVSREM_NODE:  result.setOutput(actx->bvsrem(actx->variable(var_x), actx->variable(var_y))); break;
-          case triton::ast::BVSUB_NODE:   result.setOutput(actx->bvsub(actx->variable(var_x),  actx->variable(var_y))); break;
-          case triton::ast::BVUDIV_NODE:  result.setOutput(actx->bvudiv(actx->variable(var_x), actx->variable(var_y))); break;
-          case triton::ast::BVUREM_NODE:  result.setOutput(actx->bvurem(actx->variable(var_x), actx->variable(var_y))); break;
-          case triton::ast::BVXNOR_NODE:  result.setOutput(actx->bvxnor(actx->variable(var_x), actx->variable(var_y))); break;
-          case triton::ast::BVXOR_NODE:   result.setOutput(actx->bvxor(actx->variable(var_x),  actx->variable(var_y))); break;
+      if (found) 
+      {
+        switch (op) 
+        {
+          case triton::ast::BVADD_NODE:   
+            result.setOutput(actx->bvadd(actx->variable(var_x),  actx->variable(var_y))); break;
+          case triton::ast::BVAND_NODE:   
+            result.setOutput(actx->bvand(actx->variable(var_x),  actx->variable(var_y))); break;
+          case triton::ast::BVMUL_NODE:   
+            result.setOutput(actx->bvmul(actx->variable(var_x),  actx->variable(var_y))); break;
+          case triton::ast::BVNAND_NODE:  
+            result.setOutput(actx->bvnand(actx->variable(var_x), actx->variable(var_y))); break;
+          case triton::ast::BVNOR_NODE:   
+            result.setOutput(actx->bvnor(actx->variable(var_x),  actx->variable(var_y))); break;
+          case triton::ast::BVOR_NODE:    
+            result.setOutput(actx->bvor(actx->variable(var_x),   actx->variable(var_y))); break;
+          case triton::ast::BVROL_NODE:   
+            result.setOutput(actx->bvrol(actx->variable(var_x),  actx->variable(var_y))); break;
+          case triton::ast::BVROR_NODE:   
+            result.setOutput(actx->bvror(actx->variable(var_x),  actx->variable(var_y))); break;
+          case triton::ast::BVSDIV_NODE:  
+            result.setOutput(actx->bvsdiv(actx->variable(var_x), actx->variable(var_y))); break;
+          case triton::ast::BVSMOD_NODE:  
+            result.setOutput(actx->bvsmod(actx->variable(var_x), actx->variable(var_y))); break;
+          case triton::ast::BVSREM_NODE:  
+            result.setOutput(actx->bvsrem(actx->variable(var_x), actx->variable(var_y))); break;
+          case triton::ast::BVSUB_NODE:   
+            result.setOutput(actx->bvsub(actx->variable(var_x),  actx->variable(var_y))); break;
+          case triton::ast::BVUDIV_NODE:  
+            result.setOutput(actx->bvudiv(actx->variable(var_x), actx->variable(var_y))); break;
+          case triton::ast::BVUREM_NODE:  
+            result.setOutput(actx->bvurem(actx->variable(var_x), actx->variable(var_y))); break;
+          case triton::ast::BVXNOR_NODE:  
+            result.setOutput(actx->bvxnor(actx->variable(var_x), actx->variable(var_y))); break;
+          case triton::ast::BVXOR_NODE:   
+            result.setOutput(actx->bvxor(actx->variable(var_x),  actx->variable(var_y))); break;
           default:
             throw triton::exceptions::SynthesizerEngine("Synthesizer::binaryOperatorSynthesis(): Invalid type of operator.");
         }
@@ -316,9 +342,8 @@ namespace triton::engines::synthesis
         auto in      = node;
         auto outsize = out->getBitvectorSize();
         auto insize  = in->getBitvectorSize();
-        if (insize > outsize) {
+        if (insize > outsize)
           result.setOutput(actx->zx(insize - outsize, out));
-        }
 
         // Stop iterating over oracles
         result.setSuccess(true);
@@ -327,40 +352,49 @@ namespace triton::engines::synthesis
       // If not found, continuing to iterate over oracles
     }
 
-    // Whatever the result, we must restore orignal value of symbolic variables
+    // Whatever the result, we must restore original value of symbolic variables
     actx->updateVariable(var_x->getName(), save_x);
     actx->updateVariable(var_y->getName(), save_y);
 
     return result.successful();
   }
 
-
-  bool Synthesizer::childrenSynthesis(const triton::ast::SharedAbstractNode& node, bool constant, bool opaque, SynthesisResult& result) {
+  bool Synthesizer::childrenSynthesis(
+    const triton::ast::SharedAbstractNode& node, 
+    bool constant, 
+    bool opaque, 
+    SynthesisResult& result) 
+  {
     std::stack<triton::ast::AbstractNode*>                worklist;
     std::unordered_set<const triton::ast::AbstractNode*>  visited;
 
     bool ret = false;
     worklist.push(node.get());
-    while (!worklist.empty()) {
+    while (!worklist.empty()) 
+    {
       auto current = worklist.top();
       worklist.pop();
 
       // This means that node is already visited and we will not need to visited it second time
-      if (visited.find(current) != visited.end()) {
+      if (visited.find(current) != visited.end())
         continue;
-      }
+
       visited.insert(current);
 
       // Unroll reference
-      if (current->getType() == triton::ast::REFERENCE_NODE) {
+      if (current->getType() == triton::ast::REFERENCE_NODE) 
+      {
         worklist.push(reinterpret_cast<triton::ast::ReferenceNode*>(current)->getSymbolicExpression()->getAst().get());
       }
-      else {
+      else 
+      {
         triton::usize index = 0;
         // Apply synthesis on every child
-        for (const auto& child : current->getChildren()) {
+        for (const auto& child : current->getChildren()) 
+        {
           SynthesisResult tmp;
-          if (this->do_synthesize(child, constant, opaque, tmp)) {
+          if (this->do_synthesize(child, constant, opaque, tmp)) 
+          {
             /* Symbolize the sub expression */
             triton::ast::SharedAbstractNode subvar = this->symbolizeSubExpression(child, tmp);
             /* Replace the child on the fly */
@@ -380,25 +414,28 @@ namespace triton::engines::synthesis
       * If we synthesized at least one child, we set the output as 'node'
       * because it has been modified on the fly
       */
-    if (result.successful()) {
+    if (result.successful())
       result.setOutput(node);
-    }
 
     return ret;
   }
 
-
-  triton::ast::SharedAbstractNode Synthesizer::symbolizeSubExpression(const triton::ast::SharedAbstractNode& node, SynthesisResult& tmpResult) {
+  triton::ast::SharedAbstractNode Synthesizer::symbolizeSubExpression(
+    const triton::ast::SharedAbstractNode& node, 
+    SynthesisResult& tmpResult) 
+  {
     triton::ast::SharedAstContext actx      = node->getContext();
     triton::ast::SharedAbstractNode subvar  = nullptr;
 
     auto it =  this->hash2var.find(tmpResult.getOutput()->getHash());
-    if (it != this->hash2var.end()) {
-      /* If we already symbolized the node, return its symbolic variable */
+    if (it != this->hash2var.end()) 
+    {
+      // If we already symbolized the node, return its symbolic variable
       subvar = it->second;
     }
-    else {
-      /* Otherwise we create a new symbolic variable for this sub expression */
+    else 
+    {
+      // Otherwise we create a new symbolic variable for this sub expression
       subvar = actx->variable(this->symbolic->newSymbolicVariable(triton::engines::symbolic::UNDEFINED_VARIABLE, 0, node->getBitvectorSize()));
       this->hash2var.insert({tmpResult.getOutput()->getHash(), subvar});
       this->var2expr.insert({subvar, tmpResult.getOutput()});
