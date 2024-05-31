@@ -157,7 +157,9 @@ namespace triton::ast
     TRITON_EXPORT void setParent(std::unordered_set<AbstractNode*>& p);
 
     //! Sets the size of the node.
-    TRITON_EXPORT void setBitvectorSize(triton::uint32 size);
+    TRITON_EXPORT void setBitvectorSize(triton::uint32 size) {
+      this->size = size;
+    }
 
     //! Adds a child.
     TRITON_EXPORT void addChild(const SharedAbstractNode& child);
@@ -672,7 +674,8 @@ namespace triton::ast
 
 
   //! Integer node
-  class IntegerNode : public AbstractNode {
+  class IntegerNode : public AbstractNode 
+  {
   private:
     TRITON_EXPORT void initHash(void);
 
@@ -687,7 +690,8 @@ namespace triton::ast
 
 
   //! `(ite <ifExpr> <thenExpr> <elseExpr>)`
-  class IteNode : public AbstractNode {
+  class IteNode : public AbstractNode 
+  {
   private:
     TRITON_EXPORT void initHash(void);
 

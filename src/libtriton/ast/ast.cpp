@@ -259,10 +259,6 @@ namespace triton::ast
     }
   }
 
-  void AbstractNode::setBitvectorSize(triton::uint32 size) {
-    this->size = size;
-  }
-
   std::string AbstractNode::str(void) const 
   {
     std::stringstream s;
@@ -1513,7 +1509,8 @@ namespace triton::ast
   }
 
 
-  void BvsmodNode::init(bool withParents) {
+  void BvsmodNode::init(bool withParents) 
+  {
     triton::sint512 op1Signed = 0;
     triton::sint512 op2Signed = 0;
 
@@ -2131,7 +2128,8 @@ namespace triton::ast
   /* ====== bv */
 
 
-  BvNode::BvNode(const triton::uint512& value, triton::uint32 size, const SharedAstContext& ctxt): AbstractNode(BV_NODE, ctxt) {
+  BvNode::BvNode(const triton::uint512& value, triton::uint32 size, const SharedAstContext& ctxt): AbstractNode(BV_NODE, ctxt) 
+  {
     this->size = size;
     this->addChild(this->ctxt->integer(value & this->getBitvectorMask()));
     this->addChild(this->ctxt->integer(size));
@@ -2628,8 +2626,8 @@ namespace triton::ast
     this->value = value;
   }
 
-
-  void IntegerNode::init(bool withParents) {
+  void IntegerNode::init(bool withParents) 
+  {
     /* Init attributes */
     this->eval        = 0;
     this->size        = 0;
@@ -2644,19 +2642,17 @@ namespace triton::ast
     this->initHash();
   }
 
-
   triton::uint512 IntegerNode::getInteger(void) {
     return this->value;
   }
 
-
-  void IntegerNode::initHash(void) {
+  void IntegerNode::initHash(void) 
+  {
     static const triton::uint512 even_flag = (triton::uint512(1) << 64) | 1;
-    if ((this->value & 1) == 0) {
+    if ((this->value & 1) == 0)
       this->hash = static_cast<triton::uint64>(this->type) ^ this->value;
-    } else {
+    else
       this->hash = static_cast<triton::uint64>(this->type) ^ this->value ^ (even_flag);
-    }
   }
 
 
@@ -2668,7 +2664,6 @@ namespace triton::ast
     this->addChild(thenExpr);
     this->addChild(elseExpr);
   }
-
 
   void IteNode::init(bool withParents) {
     if (this->children.size() < 3)

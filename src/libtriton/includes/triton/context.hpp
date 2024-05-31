@@ -715,4 +715,6 @@ namespace triton
       //! [**lifting api**] - Lifts and simplify an AST using LLVM
       TRITON_EXPORT triton::ast::SharedAbstractNode simplifyAstViaLLVM(const triton::ast::SharedAbstractNode& node) const;
   };
+
+  using SharedContext = std::shared_ptr<triton::Context>;
 }
