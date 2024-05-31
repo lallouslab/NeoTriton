@@ -16,15 +16,15 @@
 namespace triton::engines::lifters
 {
   LiftingToDot::LiftingToDot(
-    const triton::ast::SharedAstContext& astCtxt, 
-    triton::engines::symbolic::SymbolicEngine* symbolic): astCtxt(astCtxt), symbolic(symbolic) 
+    const triton::ast::SharedAstContext& astCtxt,
+    triton::engines::symbolic::SymbolicEngine* symbolic): astCtxt(astCtxt), symbolic(symbolic)
   {
     this->uniqueid = 0;
   }
 
   std::ostream& LiftingToDot::liftToDot(
-    std::ostream& stream, 
-    const triton::engines::symbolic::SharedSymbolicExpression& expr) 
+    std::ostream& stream,
+    const triton::engines::symbolic::SharedSymbolicExpression& expr)
   {
     /* Slice expressions */
     this->expressions = this->symbolic->sliceExpressions(expr);
@@ -37,9 +37,9 @@ namespace triton::engines::lifters
     return this->liftToDot(stream, expr->getAst());
   }
 
-  void LiftingToDot::spreadInformation(std::ostream& stream) 
+  void LiftingToDot::spreadInformation(std::ostream& stream)
   {
-    for (const auto& i : this->information) 
+    for (const auto& i : this->information)
     {
       auto* node = i.first;
       auto* se = i.second;
@@ -54,8 +54,7 @@ namespace triton::engines::lifters
     }
   }
 
-
-  void LiftingToDot::defineLegend(std::ostream& stream) 
+  void LiftingToDot::defineLegend(std::ostream& stream)
   {
     /* Do not create legend if there is no extra information */
     if (this->expressions.empty())
@@ -78,14 +77,14 @@ namespace triton::engines::lifters
     stream << std::endl << "\"];" << std::endl;
   }
 
-  void LiftingToDot::iterateNodes(const triton::ast::SharedAbstractNode& root) 
+  void LiftingToDot::iterateNodes(const triton::ast::SharedAbstractNode& root)
   {
     auto ttnodes = triton::ast::childrenExtraction(root, true /* unroll*/, false /* revert */);
 
-    for (auto const& node : ttnodes) 
+    for (auto const& node : ttnodes)
     {
-      switch (node->getType()) {
-
+      switch (node->getType()) 
+      {
         case triton::ast::ARRAY_NODE: {
           this->nodes.insert({reinterpret_cast<size_t>(node.get()), "[label=\"MEMORY\"];"});
           break;
@@ -146,10 +145,9 @@ namespace triton::engines::lifters
           break;
         }
 
-        case triton::ast::BVOR_NODE: {
+        case triton::ast::BVOR_NODE:
           this->nodes.insert({reinterpret_cast<size_t>(node.get()), "[label=\"BVOR\"];"});
           break;
-        }
 
         case triton::ast::BVROL_NODE: {
           auto RHS = node->getChildren()[1];
@@ -224,10 +222,9 @@ namespace triton::engines::lifters
           break;
         }
 
-        case triton::ast::BVUGT_NODE: {
+        case triton::ast::BVUGT_NODE:
           this->nodes.insert({reinterpret_cast<size_t>(node.get()), "[label=\"BVUGT\"];"});
           break;
-        }
 
         case triton::ast::BVULE_NODE: {
           this->nodes.insert({reinterpret_cast<size_t>(node.get()), "[label=\"BVULE\"];"});
@@ -287,12 +284,12 @@ namespace triton::engines::lifters
           break;
         }
 
-        case triton::ast::EQUAL_NODE: {
+        case triton::ast::EQUAL_NODE:
           this->nodes.insert({reinterpret_cast<size_t>(node.get()), "[label=\"==\"];"});
           break;
-        }
 
-        case triton::ast::EXTRACT_NODE: {
+        case triton::ast::EXTRACT_NODE: 
+        {
           auto nhi = node->getChildren()[0];
           auto nlo = node->getChildren()[1];
           auto hi  = triton::ast::getInteger<std::string>(nhi);
@@ -394,7 +391,7 @@ namespace triton::engines::lifters
 
         default:
           break;
-      };
+      }
 
       if (node->getType() == triton::ast::BV_NODE) {
         /* Skip bv node because we have a custom repr */
@@ -407,21 +404,20 @@ namespace triton::engines::lifters
       }
 
       /* Link the current node with its children */
-      for (auto const& child : node->getChildren()) {
+      for (auto const& child : node->getChildren()) 
+      {
         /* Handle variable repr */
-        if (child->getType() == triton::ast::VARIABLE_NODE) {
+        if (child->getType() == triton::ast::VARIABLE_NODE) 
           this->handleVariable(node, child);
-        }
         /* Link by default */
-        else {
+        else
           this->edges.insert({reinterpret_cast<size_t>(node.get()), reinterpret_cast<size_t>(child.get())});
-        }
       }
     }
   }
 
 
-  void LiftingToDot::handleVariable(const triton::ast::SharedAbstractNode& parent, const triton::ast::SharedAbstractNode& child) 
+  void LiftingToDot::handleVariable(const triton::ast::SharedAbstractNode& parent, const triton::ast::SharedAbstractNode& child)
   {
     /* Variables are displayed on several nodes for a better visibility */
     this->uniqueid++;
@@ -434,8 +430,8 @@ namespace triton::engines::lifters
   }
 
   std::ostream& LiftingToDot::liftToDot(
-    std::ostream& stream, 
-    const triton::ast::SharedAbstractNode& root) 
+    std::ostream& stream,
+    const triton::ast::SharedAbstractNode& root)
   {
     /* Prologue of Dot format */
     stream << "digraph triton {" << std::endl;
