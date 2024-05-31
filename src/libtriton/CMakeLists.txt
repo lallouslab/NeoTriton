@@ -81,6 +81,7 @@ set(LIBTRITON_HEADER_FILES
     includes/triton/arm32Specifications.hpp
     includes/triton/armOperandProperties.hpp
     includes/triton/ast.hpp
+    includes/triton/astOperators.hpp
     includes/triton/astContext.hpp
     includes/triton/astEnums.hpp
     includes/triton/astPcodeRepresentation.hpp
